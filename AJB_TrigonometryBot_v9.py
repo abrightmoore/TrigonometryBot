@@ -43,7 +43,7 @@ def mainLoop():
 	RESTTIMEQUANTUM = 30
 	restTimeMax = 300 # Five minutes
 	restTime = restTimeDefault # when it is time to sleep, how long to sleep for
-	CREATIVEQUANTUM = 0.1
+	CREATIVEQUANTUM = 0.03
 	moodCreative = 0.6 # How likely I will create _something_ when tested
 	jobsComplete = 0
 	# Wake periodically and decide what to do
@@ -190,7 +190,8 @@ def readMemory():
 
 def handleMentions(api,max_id,tweetbot):
 	# Read the Twitter queue for messages, and process them
-	
+	height = 640
+	width = 640
 	jobsComplete = 0
 
 	r = None
@@ -267,46 +268,47 @@ def handleMentions(api,max_id,tweetbot):
 				l = len(msg)-1
 				print "Message: "+msg+"\nLength: "+str(l)
 				# First pass...
-				formulaR = msg[:-int(l/3)*2].strip()
-				formulaG = msg[int(l/3)+1:-int(l/3)].strip()
-				formulaB = msg[int(l/3)*2:].strip()
-				if random() > 0.8:
-					(formulaR,formulaG,formulaB) = getFormulas()
+#				formulaR = msg[:-int(l/3)*2].strip()
+#				formulaG = msg[int(l/3)+1:-int(l/3)].strip()
+#				formulaB = msg[int(l/3)*2:].strip()
+#				if random() > 0.8:
+#					(formulaR,formulaG,formulaB) = getFormulas()
 				# Whittle a little: make the formulas a bit more compact
 
-				if len(formulaR) > 1:
-					formulaR = formulaR[randint(1,len(formulaR)-1):].strip()
-				if len(formulaG) > 1:
-					formulaG = formulaG[randint(1,len(formulaG)-1):].strip()
-				if len(formulaB) > 1:
-					formulaB = formulaB[randint(1,len(formulaB)-1):].strip()
+#				if len(formulaR) > 1:
+#					formulaR = formulaR[randint(1,len(formulaR)-1):].strip()
+#				if len(formulaG) > 1:
+#					formulaG = formulaG[randint(1,len(formulaG)-1):].strip()
+#				if len(formulaB) > 1:
+#					formulaB = formulaB[randint(1,len(formulaB)-1):].strip()
 
-				print "R: "+formulaR
-				print "G: "+formulaG
-				print "B: "+formulaB
+#				print "R: "+formulaR
+#				print "G: "+formulaG
+#				print "B: "+formulaB
 				
-				img = Image.new('RGBA', size=(640, 480), color=(0, 0, 0))
-
+#				img = Image.new('RGBA', size=(640, 480), color=(0, 0, 0))
+				img = beCreative(height,width,replyToName)
 				# Choose what type of image to create
-				if True:
+#				if True:
 					# (formulaR,formulaG,formulaB) = getFormulas(R)
-					makeTrigImage(img,formulaR,formulaG,formulaB)
-					memoryAppend((formulaR,formulaG,formulaB,replyToName))
+#					makeTrigImage(img,formulaR,formulaG,formulaB)
+#					memoryAppend((formulaR,formulaG,formulaB,replyToName))
 				
-				newFile = BytesIO()	
-				img.save(newFile, 'png')
-				newFile.name = FILENAMEIMAGE
-				newFile.seek(0)
+#				newFile = BytesIO()	
+#				img.save(newFile, 'png')
+#				newFile.name = FILENAMEIMAGE
+#				newFile.seek(0)
 
 				# parse the original message for words to use in replying
 				seedword = msg.split()
 				
-				tweet_text = getTweetText(tweetbot,replyToName+" R: "+formulaR+" G: "+formulaG+" B: "+formulaB,seedword) # Conversation management goes here
+				tweet_text = getTweetText(tweetbot,replyToName+", I made this for you because you asked nicely.\n",seedword) # Conversation management goes here
 				
 				while len(tweet_text) > TWITTERLIMIT: # Twitter limit
 					tweet_text = getTweetText(tweetbot,replyToName,seedword)
 				print tweet_text
-				postToTwitter_File(api,newFile,tweet_text,id)
+				postToTwitter_Image(api,img,tweet_text,id)
+				#postToTwitter_File(api,newFile,tweet_text,id)
 
 				r = api.request('favorites/create', {'id':id})
 				print('FAVORITE SUCCESS' if r.status_code == 200 else 'FAVORITE FAILURE')

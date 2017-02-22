@@ -423,7 +423,13 @@ def makeInterferenceImage(img):
                 P.append((random()*pi*2.0,randint(0,theRange),random(),random()*scale))
                 if random() < 0.2:
                         P.append((random()*pi*2.0,randint(0,width>>2),random(),random()*scale)) 
-        C = getComplementaryColours(randint(3,128))
+#        C = getComplementaryColours(randint(3,128))
+		C = []
+		if randint(1,5) < 4:
+			C = getRandomAnalogousColours()
+		else:
+			C = getRandomComplementaryColours()
+
         # render the image
 	pixels = img.load()
 	for x in xrange(0,width):
@@ -549,7 +555,12 @@ def makeColourSwatch(img):
 	QUANTUMX = (2.0*pi)/float(width*scaleDelta)
 	QUANTUMY = (2.0*pi)/float(height*scaleDelta)
 
-	C = getRandomComplementaryColours()
+	C = []
+	if randint(1,5) < 4:
+		C = getRandomAnalogousColours()
+	else:
+		C = getRandomComplementaryColours()
+		
 	for j in xrange(0,3):
                 Clen = len(C)
                 for i in xrange(0,Clen):
@@ -685,8 +696,17 @@ def getComplementaryColours(quantity):
 
 	return resultConstrained
 
+	
 def getRandomComplementaryColours():
 	return getComplementaryColours(randint(2,64))
+
+def getRandomAnalogousColours():
+	C = getComplementaryColours(12)
+	R = []
+	for i in xrange(0,2):
+		R.append(C[i])
+	return R
+
 	
 def getFormulas():
 	formulaR = makeRandomFormula()
