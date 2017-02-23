@@ -21,7 +21,10 @@ def createImgWithRules(width,height,formulaR,formulaG,formulaB):
 	img = Image.new('RGBA', size=(width, height), color=(0, 0, 0))
 	# Choose what type of image to create
 	chance = random()
-	if chance < 0.1:
+	if chance < 0.05:
+		print "Making squiggly lines"
+		img = InkSplodgyWiggleLinesCol(img)
+	elif chance < 0.1:
 		print "Making a TrigImage with spheres"
 		makeTrigImage(img,formulaR,formulaG,formulaB)
 		pix = img.load()
@@ -40,48 +43,73 @@ def createImgWithRules(width,height,formulaR,formulaG,formulaB):
 			px = randint(radius,width-radius-1)
 			py = randint(radius,height-radius-1)
 			drawTrigSphere(pix,px,py,radius,f1,f2,f3)
-	elif chance < 0.12: # A curvy graph
-		print "Making a TrigFuncGraphImage"
-		makeTrigFuncGraphImage(img,formulaR,formulaG,formulaB)
-	elif chance < 0.2:
+	elif chance < 0.15:
 		print "Making a ColourSwatch"
 		makeColourSwatch(img)
-	elif chance < 0.4:
+	elif chance < 0.20:
 		print "Making an InterferenceImage"
 		makeInterferenceImage(img)
-	elif chance < 0.8:
+	elif chance < 0.25:
+		print "Making an InkSplodgyLineSpiralWiggleLines"
+		InkSplodgyLineSpiralWiggleLines(img)
+	elif chance < 0.30:
+		print "Making a SquaresInk"
+		SquaresInk(img)
+	elif chance < 0.33:
+		print "Making a InkSplodgyWiggleLines"		
+		InkSplodgyWiggleLines(img)
+	elif chance < 0.36:
+		print "InkSplodgyLineSpiralWiggle"
+		InkSplodgyLineSpiralWiggle(img)
+	elif chance < 0.39:
+		print "InkSplodgyLineSpiral"		
+		InkSplodgyLineSpiral(img)
+	elif chance < 0.42:
+		print "InkSplodgy"		
+		InkSplodgy(img)
+	elif chance < 0.80:
 		print "Making a blendedImage"
 		ox,oy,sx,sy = (-2.0,-1.5,3.0,3.0)
 #               ox,oy,sx,sy = (-1.108,-0.230,0.005,0.005)
-		methods = ["Circle","Spike"]
+		methods = ["Circle","Spike","Blend","Spike","Blend","Spike","Blend","Spike","Blend","Spike","Blend"]
 		imgArray = []
 		for i in xrange(0,8):
 			(new_ox,new_oy,new_sx,new_sy) = drawMandelbrot(img,ox,oy,sx,sy)
-			filename = "AJTrimage_"+str(width)+"_"+str(ox)+"_"+str(oy)+"_"+str(sx)+"_"+str(sy)+"_"+formulaR+"_"+formulaG+"_"+formulaB+".png"
+			# filename = "AJTrimage_"+str(width)+"_"+str(ox)+"_"+str(oy)+"_"+str(sx)+"_"+str(sy)+"_"+formulaR+"_"+formulaG+"_"+formulaB+".png"
 			# img.save(filename)
-			trigImg = Image.new('RGBA', size=(width, height), color=(0, 0, 0))
-			(formulaR,formulaG,formulaB) = getFormulas()
-			makeTrigImage(trigImg,formulaR,formulaG,formulaB)
-			trigImg.save("AJFractrigMooshyimage_"+str(randint(111111111,999999999))+".png")
 
-			newimg = mergeImages(img,trigImg, "Spike" ) # methods[randint(0,len(methods)-1)])
-			newimg.save("AJFractrigimage_"+str(randint(111111111,999999999))+".png")
+			#newimg.save("AJFractrigimage_"+str(randint(111111111,999999999))+".png")
 			ox = new_ox
 			oy = new_oy
 			sx = new_sx
 			sy = new_sy
-			imgArray.append(newimg)
+			imgArray.append(img)
 		if len(imgArray) > 0:
 			img = imgArray[randint(1,len(imgArray)-1)] # Choose one of the images generated
+
+			trigImg = Image.new('RGBA', size=(width, height), color=(0, 0, 0))
+			(formulaR,formulaG,formulaB) = getFormulas()
+			makeTrigImage(trigImg,formulaR,formulaG,formulaB)
+			#trigImg.save("AJFractrigMooshyimage_"+str(randint(111111111,999999999))+".png")
+
+			img = mergeImages(img,trigImg, methods[randint(0,len(methods)-1)])
+			
+			if random() < 0.3:
+				writingImg = InkSplodgyWiggleLinesCol(img)
+				img = mergeImages(writingImg,img, "Spike" )
 		# for imgA in imgArray:
 			# filename = "AJMandelbrot_"+str(width)+"_"+str(ox)+"_"+str(oy)+"_"+str(sx)+"_"+str(sy)+"_"+str(randint(111111111,999999999))+".png"
 			# imgA.save(filename)
-	else:
+	elif chance < 0.98:
 		print "Making a TrigImage"
 		makeTrigImage(img,formulaR,formulaG,formulaB)
+	else: # A curvy graph
+		print "Making a TrigFuncGraphImage"
+		makeTrigFuncGraphImage(img,formulaR,formulaG,formulaB)
+
 	return img
 
-def createImgFile(width,height,author):
+def createImgFile(width,height,author): # DEPRECATED
 	# In memory file method used is by Rolo http://wildfish.com/blog/2014/02/27/generating-in-memory-image-for-tests-python/
 	FILENAMEIMAGE = '@abrightmoore_@TrigonometryBot_output.png'
 
@@ -89,7 +117,9 @@ def createImgFile(width,height,author):
 
 	# Choose what type of image to create
 	chance = random()
-	if chance < 0.05:
+	if chance < 1.0:
+		img = InkSplodgyWiggleLinesCol(img)
+	elif chance < 0.05:
 		makeTrigImage(img,formulaR,formulaG,formulaB)
 		pix = img.load()
 		# Spheres
@@ -120,9 +150,9 @@ def createImgFile(width,height,author):
 			sy = new_sy
 		if len(imgArray) > 0:
 			img = imgArray[randint(1,len(imgArray)-1)] # Choose one of the images generated
-		for imgA in imgArray:
-			filename = "AJMandelbrot_"+str(width)+"_"+str(ox)+"_"+str(oy)+"_"+str(sx)+"_"+str(sy)+"_"+str(randint(111111111,999999999))+".png"
-			imgA.save(filename)
+#		for imgA in imgArray:
+#			filename = "AJMandelbrot_"+str(width)+"_"+str(ox)+"_"+str(oy)+"_"+str(sx)+"_"+str(sy)+"_"+str(randint(111111111,999999999))+".png"
+#			imgA.save(filename)
 	else:
 		(formulaR,formulaG,formulaB) = getFormulas()
 		makeTrigImage(img,formulaR,formulaG,formulaB)
@@ -412,7 +442,7 @@ def drawGraph(img,col):
 	del pixels
 
 def makeInterferenceImage(img):
-        width = img.size[0]
+	width = img.size[0]
 	height = img.size[1]
 	P = []
         numPoints = randint(1,17)
@@ -894,3 +924,1039 @@ def calcFormula(formula,x,y):
 				err = err+1
 			
 	return val
+
+# Older code lifted from the prototype stage - @abrightmoore
+	
+def adjustByOneRandomly(R,x,l,u):
+	x = x+R.randint(-1,1)
+	if x > u:
+		x = u
+	if x < l:
+		x = l
+	return x
+
+def adjustColourRandomly(R,r,g,b,l,u):
+	x = R.randint(-1,1)
+	r = r+x
+	g = g+x
+	b = b+x
+	if r > u:
+		r = u
+	elif r < l:
+		r = l
+	if g > u:
+		g = u
+	elif g < l:
+		g = l
+	if b > u:
+		b = u
+	elif b < l:
+		b = l
+	return (r,g,b)
+
+def fill(pixels,width,height,r,g,b,a):
+	for x in xrange(0,width):
+		for y in xrange(0,height):
+			pixels[x,y] = (r,g,b,a)
+
+def setAlpha(pixels,width,height,a):
+	for x in xrange(0,width):
+		for y in xrange(0,height):
+			(r,g,b,a0) = pixels[x,y]
+			pixels[x,y] = (r,g,b,a)
+			
+def example_SquaresSquared(RAND): # Reference
+	(R,SEED) = RAND
+	SMOOTHAMOUNT = 4
+	width = 1400
+	height = width
+	maxRadius = R.randint(1,4) # int(width/20)
+	border = 3*maxRadius
+	(filename,width,height) = ("ajb_example_SquaresSquared_"+str(SEED)+"_"+str(randint(10000000,99999999)),width,height)
+	img = Image.new('RGBA', (width, height))
+	pixels = img.load()
+	(r,g,b,a) = (207,157,51,0)
+	fill(pixels,width,height,r,g,b,a)
+	
+	for ii in xrange(1,4):
+		charSizeW = R.randint(4,int(width/2))
+		charSizeH = charSizeW
+	
+		# Navigate the canvas
+		posY = 0
+		radius = maxRadius
+	#	(r,g,b,a) = (R.randint(0,255),R.randint(0,255),R.randint(0,255),255)
+
+		spread = R.randint(50,100)*0.01
+		#(r,g,b,a) = (124,85,79,16)	
+		rr = R.randint(1,128)
+		(r,g,b,a) = (int(rr*2/3),rr,rr,R.randint(8,16))	
+		
+		while posY < height:
+			posX = 0
+
+			while posX < width:
+				if R.random() < spread:
+					#(r,g,b,a) = (R.randint(0,255),R.randint(0,255),R.randint(0,255),128)
+					(r,g,b,a) = (int(rr*2/3),rr,rr,R.randint(8,16))		
+				# For each square
+				for e in xrange(0,int(charSizeW)/(ii*2)):
+					d = e
+					
+					for x in xrange(posX,posX+charSizeW):
+						
+						y = posY+d
+						try:
+							drawFeltTipPen(pixels,R,radius,r,g,b,a,x,y)
+						except:
+							print "oops!"
+						(r,g,b) = adjustColourRandomly(R,r,g,b,0,255)
+
+						y = posY+charSizeH-1-d
+						try:
+							drawFeltTipPen(pixels,R,radius,r,g,b,a,x,y)
+						except:
+							print "oops!"
+						(r,g,b) = adjustColourRandomly(R,r,g,b,0,255)
+
+					for y in xrange(posY,posY+charSizeH):
+
+						x = posX+d
+						try:
+							drawFeltTipPen(pixels,R,radius,r,g,b,a,x,y)
+						except:
+							print "oops!"
+						(r,g,b) = adjustColourRandomly(R,r,g,b,0,255)
+						x = posX+charSizeW-1-d
+						try:
+							drawFeltTipPen(pixels,R,radius,r,g,b,a,x,y)
+						except:
+							print "oops!"
+						(r,g,b) = adjustColourRandomly(R,r,g,b,0,255)
+			
+				posX = posX+charSizeW		
+			posY = posY+charSizeH			
+	setAlpha(pixels,width,height,255)
+	img.save(filename+".png")
+	invertPixelsNotAlpha(img)
+	img.save(filename+"_i.png")
+	print filename
+	print "Complete"
+
+			
+def example_Squares(RAND): # Reference
+	(R,SEED) = RAND
+	SMOOTHAMOUNT = 4
+	width = 1400
+	height = width
+	maxRadius = R.randint(1,4) # int(width/20)
+	border = 3*maxRadius
+	(filename,width,height) = ("ajb_example_Squares_"+str(SEED)+"_"+str(randint(10000000,99999999)),width,height)
+	img = Image.new('RGBA', (width, height))
+	pixels = img.load()
+	charSizeW = R.randint(4,int(width/2))
+	charSizeH = charSizeW
+	
+	# Navigate the canvas
+	posY = 0
+	radius = maxRadius
+#	(r,g,b,a) = (R.randint(0,255),R.randint(0,255),R.randint(0,255),255)
+	(r,g,b,a) = (207,157,51,128)
+	fill(pixels,width,height,r,g,b,a)
+	spread = R.randint(50,100)*0.01
+	(r,g,b,a) = (124,85,79,64)	
+	while posY < height:
+		posX = 0
+
+		while posX < width:
+			if R.random() < spread:
+				(r,g,b,a) = (R.randint(0,255),R.randint(0,255),R.randint(0,255),128)
+				(r,g,b,a) = (124,85,79,64)	
+			# For each square
+			for e in xrange(0,int(charSizeW)/4):
+				d = e*2
+				
+				for x in xrange(posX,posX+charSizeW):
+					
+					y = posY+d
+					try:
+						drawPixel(pixels,r,g,b,a,x,y)
+					except:
+						print "oops!"
+					(r,g,b) = adjustColourRandomly(R,r,g,b,0,255)
+
+					y = posY+charSizeH-1-d
+					try:
+						drawPixel(pixels,r,g,b,a,x,y)
+					except:
+						print "oops!"
+					(r,g,b) = adjustColourRandomly(R,r,g,b,0,255)
+
+				for y in xrange(posY,posY+charSizeH):
+
+					x = posX+d
+					try:
+						drawPixel(pixels,r,g,b,a,x,y)
+					except:
+						print "oops!"
+					(r,g,b) = adjustColourRandomly(R,r,g,b,0,255)
+					x = posX+charSizeW-1-d
+					try:
+						drawPixel(pixels,r,g,b,a,x,y)
+					except:
+						print "oops!"
+					(r,g,b) = adjustColourRandomly(R,r,g,b,0,255)
+		
+			posX = posX+charSizeW		
+		posY = posY+charSizeH			
+	img.save(filename+".png")
+	invertPixelsNotAlpha(img)
+	img.save(filename+"_i.png")
+	print filename
+	print "Complete"
+			
+def SquaresInk(img): # Reference
+	width = img.size[0]
+	height = img.size[1]
+
+	error = 0
+	R = Random()
+	SMOOTHAMOUNT = 4
+	maxRadius = R.randint(1,4) # int(width/20)
+	border = 3*maxRadius
+	#(filename,width,height) = ("ajb_example_SquaresInk_"+str(SEED)+"_"+str(randint(10000000,99999999)),width,height)
+	#img = Image.new('RGBA', (width, height))
+	pixels = img.load()
+	charSizeW = R.randint(4,128)
+	charSizeH = charSizeW
+	
+	# Navigate the canvas
+	posY = 0
+	radius = maxRadius
+#	(r,g,b,a) = (R.randint(0,255),R.randint(0,255),R.randint(0,255),255)
+	(r,g,b,a) = (207,157,51,128)
+	fill(pixels,width,height,r,g,b,a)
+	spread = R.randint(50,100)*0.01
+	(r,g,b,a) = (124,85,79,64)	
+	while posY < height:
+		posX = 0
+
+		while posX < width:
+			if R.random() < spread:
+				(r,g,b,a) = (R.randint(0,255),R.randint(0,255),R.randint(0,255),128)
+				(r,g,b,a) = (124,85,79,64)	
+			# For each square
+			for e in xrange(0,int(charSizeW)/4):
+				d = e*2
+				
+				for x in xrange(posX,posX+charSizeW):
+					
+					y = posY+d
+					drawFeltTipPen(pixels,R,radius,r,g,b,a,x,y)
+					(r,g,b) = adjustColourRandomly(R,r,g,b,0,255)
+
+					y = posY+charSizeH-1-d
+					drawFeltTipPen(pixels,R,radius,r,g,b,a,x,y)
+					(r,g,b) = adjustColourRandomly(R,r,g,b,0,255)
+
+				for y in xrange(posY,posY+charSizeH):
+
+					x = posX+d
+					drawFeltTipPen(pixels,R,radius,r,g,b,a,x,y)
+					(r,g,b) = adjustColourRandomly(R,r,g,b,0,255)
+					x = posX+charSizeW-1-d
+					drawFeltTipPen(pixels,R,radius,r,g,b,a,x,y)
+					(r,g,b) = adjustColourRandomly(R,r,g,b,0,255)
+		
+			posX = posX+charSizeW		
+		posY = posY+charSizeH			
+	#img.save(filename+".png")
+	invertPixelsNotAlpha(img)
+	#img.save(filename+"_i.png")
+	#print filename
+	#print "Complete"
+	return img
+		
+def InkSplodgyWiggleLinesCol(img): # Reference
+	width = img.size[0]
+	height = img.size[1]
+
+	error = 0
+	R = Random()
+	SMOOTHAMOUNT = 4
+	maxRadius = R.randint(1,4) # int(width/20)
+	border = 3*maxRadius
+	# (filename,width,height) = ("ajb_example_InkSplodgyWiggleLinesCol_"+str(SEED)+"_"+str(randint(10000000,99999999))+".png",width,height)
+	pixels = img.load()
+
+	t = 0.0
+	startx = prevx = x = width/2
+	starty = prevy = y =  height/2
+	z = 0
+
+	charSizeW = R.randint(32,64)
+	charSizeH = R.randint(32,64)
+	angle = pi/180.0
+	direction = R.random()*pi*2.0
+	distance = 6.0
+
+	(r,g,b,a) = (R.randint(128,255),R.randint(0,255),R.randint(0,255),32)
+	posY = 0
+	while posY < height:
+		print posY
+		posX = 0
+		P = []
+
+
+		while posX < width:
+			P.append((posX,posY+charSizeH,0))
+			maxP = 13
+			if R.randint(1,100) > 90:
+				maxP = 17
+			for i in xrange(3,maxP):
+				P.append((R.randint(posX,posX+charSizeW),R.randint(posY,posY+charSizeH),0)) # apply the wiggle when rendering, not when calculating
+			P.append((posX+charSizeW,posY+charSizeH,0))
+
+			posX = posX+charSizeW
+		P = calcLinesSmooth(SMOOTHAMOUNT,P)
+		P = makePathUnique(P)
+
+		for (x,y,z) in P:
+			radius = abs(cos(direction)*maxRadius)
+			#print radius
+			try:
+				drawPixelAddAlpha(pixels,r,g,b,a,x,y)
+			except:
+				error = error +1
+				# print "Plot error 1 "+str(x+posX)+" "+str(y+posY)
+			try:
+				drawPointInky(pixels,int(radius),r,g,b,a,x,y)
+			except:
+				error = error +1
+				#print "Plot error 2 "+str(x+posX)+" "+str(y+posY)
+			if R.random() > 0.995:
+				try:
+					drawPointInkyDrops(pixels,R.randint(1,maxRadius*3),r,g,b,1,x,y) # Add noise to x and y?
+				except:
+					error = error +1
+					# print "Plot error 3 "+str(x+posX)+" "+str(y+posY)
+				# drawLineInkySplodge(pixels,direction,distance,r,g,b,a,x,y)
+
+			direction = direction+angle #spin
+			distance = distance+0.3*float(R.randint(-1,1))
+			if distance > 48:
+				distance = 48
+			if distance < 8:
+				distance = 8
+			#if R.random() > R.random():
+			#	drawPointInkyMessy(pixels,radius,r,g,b,a,x,y)
+			r = r+R.randint(-1,1)
+			g = g+R.randint(-1,1)
+			b = b+R.randint(-1,1)
+			if r > 255:
+				r = 255
+			if r < 0:
+				r = 0
+			if g > 255:
+				g = 255
+			if g < 0:
+				g = 0
+			if b > 255:
+				b = 255
+			if b < 0:
+				b = 0
+			
+		posY = posY+charSizeH
+	
+	
+#	if R.random() > 0.5:
+#		thresholdAbove(img, 100,100,100,0, 0,0,0,0)
+	invertPixels(img)
+	return img
+	
+def InkSplodgyWiggleLines(img): # Reference
+	width = img.size[0]
+	height = img.size[1]
+
+	error = 0
+	R = Random()
+	SMOOTHAMOUNT = 4
+	maxRadius = 4 # int(width/20)
+	border = 3*maxRadius
+#	(filename,width,height) = ("ajb_example_InkSplodgyWiggleLines_"+str(SEED)+"_"+str(randint(10000000,99999999))+".png",width,height)
+#	img = Image.new('RGBA', (width, height))
+	pixels = img.load()
+	(r,g,b,a) = (R.randint(128,255),R.randint(0,255),R.randint(0,255),32)
+
+
+	t = 0.0
+	startx = prevx = x = width/2
+	starty = prevy = y =  height/2
+	z = 0
+
+	charSizeW = R.randint(16,64)
+	charSizeH = R.randint(16,64)
+
+	posY = 0
+	while posY < height:
+		posX = 0
+		while posX < width:
+			P = []
+			P.append((0,charSizeH,0))
+			maxP = 17
+			if R.randint(1,100) > 90:
+				maxP = 13
+			for i in xrange(5,maxP):
+				P.append((R.randint(0,charSizeW),R.randint(0,charSizeH),0)) # apply the wiggle when rendering, not when calculating
+			P.append((charSizeW,charSizeH,0))
+			angle = pi/180.0
+			P = calcLinesSmooth(SMOOTHAMOUNT,P)
+			P = makePathUnique(P)
+			direction = R.random()*pi*2.0
+			distance = 6.0
+
+			for (x,y,z) in P:
+				radius = R.randint(1,maxRadius)
+				try:
+					drawPixelAddAlpha(pixels,r,g,b,a,x+posX,y+posY)
+					if R.random() > 0.999:
+						drawPointInkyDrops(pixels,radius,r,g,b,1,x+posX,y+posY) # Add noise to x and y?
+					# drawLineInkySplodge(pixels,direction,distance,r,g,b,a,x,y)
+					direction = direction+angle #spin
+					distance = distance+0.3*float(R.randint(-1,1))
+					if distance > 48:
+						distance = 48
+					if distance < 8:
+						distance = 8
+					#if R.random() > R.random():
+					#	drawPointInkyMessy(pixels,radius,r,g,b,a,x,y)
+				except:
+#					print "Plot error "+str(x+posX)+" "+str(y+posY)
+					error = error + 1
+			posX = posX+charSizeW
+			
+		posY = posY+charSizeH
+	
+	
+#	if R.random() > 0.5:
+#		thresholdAbove(img, 100,100,100,0, 0,0,0,0)
+	invertPixels(img)
+#	img.save(filename)
+#	print filename
+#	print "Complete"
+	return img
+	
+def InkSplodgyLineSpiralWiggleLines(img): # Reference
+	width = img.size[0]
+	height = img.size[1]
+
+	error = 0
+	R = Random()
+	SMOOTHAMOUNT = 4
+
+	maxRadius = 4 # int(width/20)
+	border = 3*maxRadius
+#	(filename,width,height) = ("ajb_example_InkSplodgyLineSpiralWiggleLines_"+str(SEED)+"_"+str(randint(10000000,99999999))+".png",width,height)
+#	img = Image.new('RGBA', (width, height))
+	pixels = img.load()
+	(r,g,b,a) = (R.randint(128,255),R.randint(0,255),R.randint(0,255),32)
+
+	P = []
+
+	t = 0.0
+	startx = prevx = x = width/2
+	starty = prevy = y =  height/2
+	z = 0
+	
+	count = 0
+	angle = pi/180.0
+	while x < width and x > 0 and y < height and y > 0 and count < 1000000:
+		count = count + 1
+		wigglex = R.randint(-maxRadius,maxRadius)
+		wiggley = R.randint(-maxRadius,maxRadius)
+
+		x = startx+t/10*cos(t*angle)
+		y = starty+t/10*sin(t*angle)
+		t = t+0.1
+		
+		if prevx != int(x) and prevy != int(y): # and count%10 == 0: # new point please, offset a little thanks!
+			P.append((x+wigglex,y+wiggley,0)) # apply the wiggle when rendering, not when calculating
+			prevx = int(x)
+			prevy = int(y)
+
+	
+	P = calcLinesSmooth(SMOOTHAMOUNT,P)
+	P = makePathUnique(P)
+	direction = R.random()*pi*2.0
+	distance = 6.0
+	for (x,y,z) in P:
+		if R.random() > R.random():
+			radius = R.randint(1,maxRadius)
+			if x <= border:
+				x = border+1
+			if x >= width-2-border:
+				x = width-2-border
+			if y <= border:
+				y = border+1
+			if y >= height-2-border:
+				y = height-2-border
+			try:
+				drawPixelAddAlpha(pixels,r,g,b,a,x,y)
+				drawPointInkyDrops(pixels,radius,r,g,b,a,x,y) # Add noise to x and y?
+				drawLineInkySplodge(pixels,direction,distance,r,g,b,a,x,y)
+				direction = direction+angle #spin
+				distance = distance+0.3*float(R.randint(-1,1))
+				if distance > 48:
+					distance = 48
+				if distance < 8:
+					distance = 8
+				#if R.random() > R.random():
+				#	drawPointInkyMessy(pixels,radius,r,g,b,a,x,y)
+			except:
+				error = error + 1
+				#print "Plot error "+str(x)+" "+str(y)
+	
+	if R.random() > 0.5:
+		thresholdAbove(img, 100,100,100,0, 0,0,0,0)
+	invertPixels(img)
+	return img
+	
+def InkSplodgyLineSpiralWiggle(img): # Reference
+	width = img.size[0]
+	height = img.size[1]
+	error = 0
+	R = Random()
+	SMOOTHAMOUNT = 4
+	maxRadius = 4 # int(width/20)
+	border = 3*maxRadius
+#	(filename,width,height) = ("ajb_example_InkSplodgyLineSpiralWiggle_"+str(SEED)+"_"+str(randint(10000000,99999999))+".png",width,height)
+#	img = Image.new('RGBA', (width, height))
+	pixels = img.load()
+	(r,g,b,a) = (R.randint(128,255),R.randint(0,255),R.randint(0,255),32)
+
+	P = []
+
+	t = 0.0
+	startx = prevx = x = width/2
+	starty = prevy = y =  height/2
+	z = 0
+	
+	count = 0
+	angle = pi/180.0
+	while x < width and x > 0 and y < height and y > 0 and count < 1000000:
+		count = count + 1
+		wigglex = R.randint(-maxRadius,maxRadius)
+		wiggley = R.randint(-maxRadius,maxRadius)
+
+		x = startx+t/10*cos(t*angle)
+		y = starty+t/10*sin(t*angle)
+		t = t+0.1
+		
+		if prevx != int(x) and prevy != int(y): # and count%10 == 0: # new point please, offset a little thanks!
+			P.append((x+wigglex,y+wiggley,0)) # apply the wiggle when rendering, not when calculating
+			prevx = int(x)
+			prevy = int(y)
+
+	
+	P = calcLinesSmooth(SMOOTHAMOUNT,P)
+	P = makePathUnique(P)
+	for (x,y,z) in P:
+		if R.random() > 0.0:
+			radius = R.randint(1,maxRadius)
+			if x <= border:
+				x = border+1
+			if x >= width-2-border:
+				x = width-2-border
+			if y <= border:
+				y = border+1
+			if y >= height-2-border:
+				y = height-2-border
+			try:
+				drawPixelAddAlpha(pixels,r,g,b,a,x,y)
+				#drawPointInkyDrops(pixels,radius,r,g,b,a,x,y) # Add noise to x and y?
+				if R.random() > R.random():
+					drawPointInkyMessy(pixels,radius,r,g,b,a,x,y)
+			except Error:
+#				print "Plot error "+str(x)+" "+str(y)
+				error=error+1
+	if R.random() > 0.5:
+		thresholdAbove(img, 100,100,100,0, 0,0,0,0)
+	invertPixels(img)
+#	img.save(filename)
+#	print filename
+#	print "Complete"
+	return img
+
+def InkSplodgyLineSpiral(img): # Reference
+	width = img.size[0]
+	height = img.size[1]
+	error = 0
+	R = Random()
+	SMOOTHAMOUNT = 4
+	maxRadius = 4 # int(width/20)
+	border = 3*maxRadius
+#	(filename,width,height) = ("ajb_example_InkSplodgyLineSpiral_"+str(SEED)+"_"+str(randint(10000000,99999999))+".png",width,height)
+#	img = Image.new('RGBA', (width, height))
+	pixels = img.load()
+	(r,g,b,a) = (R.randint(128,255),R.randint(0,255),R.randint(0,255),32)
+
+	P = []
+#	gap = 30
+
+#	for x in xrange(0,width):
+#		t = float(gap)/float(width)*x
+#		if x%gap == 0:
+#			for y in xrange(0,height):
+#				if y%gap == 0:
+#					P.append((x+R.randint(-int(t),int(t)),y,0))
+	
+#	P.append((0,0,0))
+#	P.append((width,0,0))
+#	P.append((width,height,0))
+#	P.append((0,height,0))
+#	P.append((0,0,0))
+#	P.append((width,0,0))
+
+	t = 0.0
+	startx = prevx = x = width/2
+	starty = prevy = y =  height/2
+	z = 0
+	
+	gap1 = R.randint(5,20)
+	gap2 = gap1
+	if R.randint(1,100) > 50:
+		gap2 = R.randint(5,20)
+	
+	count = 0
+	angle = pi/180.0
+	while x < width and x > 0 and y < height and y > 0 and count < 1000000:
+		count = count + 1
+		x = startx+t/gap1*cos(t*angle)
+		y = starty+t/gap2*sin(t*angle)
+		t = t+0.1
+		
+		if prevx != int(x) and prevy != int(y): # and count%10 == 0: # new point please, offset a little thanks!
+			P.append((x,y,0))			
+			prevx = int(x)
+			prevy = int(y)
+
+	
+	P = calcLinesSmooth(SMOOTHAMOUNT,P)
+	P = makePathUnique(P)
+	for (x,y,z) in P:
+		if R.random() > 0.0:
+			radius = R.randint(1,maxRadius)
+			if x <= border:
+				x = border+1
+			if x >= width-2-border:
+				x = width-2-border
+			if y <= border:
+				y = border+1
+			if y >= height-2-border:
+				y = height-2-border
+			try:
+				drawPixelAddAlpha(pixels,r,g,b,a,x,y)
+				#drawPointInkyDrops(pixels,radius,r,g,b,a,x,y) # Add noise to x and y?
+				if R.random() > R.random():
+					drawPointInkyMessy(pixels,radius,r,g,b,a,x,y)
+			except Error:
+				error=error+1
+				# print "Plot error "+str(x)+" "+str(y)
+	
+	if R.random() > 0.5:
+		thresholdAbove(img, 100,100,100,0, 0,0,0,0)
+	invertPixels(img)
+#	img.save(filename)
+#	print filename
+#	print "Complete"
+	return img
+	
+def InkSplodgy(img):
+	width = img.size[0]
+	height = img.size[1]
+	error = 0
+	R = Random()
+	maxRadius = int(width/50)
+	border = 3*maxRadius
+#	(filename,width,height) = ("ajb_example_InkSplodgy"+"_"+str(SEED)+"_"+str(randint(10000000,99999999))+".png",width,height)
+#	img = Image.new('RGBA', (width, height))
+	pixels = img.load()
+	(r,g,b,a) = (R.randint(128,255),R.randint(0,255),R.randint(0,255),64)
+	for i in xrange(0,R.randint(1,width+height)):
+		radius = R.randint(1,maxRadius)
+		px = R.randint(border,width-2-border)
+		py = R.randint(border,height-2-border)
+		
+		if px <= radius:
+			px = radius+1
+		if px >= width-2-radius:
+			px = width-2-radius
+		if py <= radius:
+			py = radius+1
+		if py >= height-2-radius:
+			py = height-2-radius
+		# print radius,r,g,b,a,px,py
+		#drawPointInkyMessy(pixels,radius,r,g,b,a,px,py)
+		drawPointInkyDrops(pixels,radius,r,g,b,a,px,py)
+
+	if R.random() > 0.5:
+		thresholdAbove(img, 100,100,100,0, 0,0,0,0)
+	invertPixels(img)
+#	img.save(filename)
+#	print filename
+#	print "Complete"
+	return img
+
+def invertPixels(img):
+	pixels = img.load()
+	width = img.size[0]
+	height = img.size[1]	
+	for x in xrange(0,width):
+		for y in xrange(0,height):
+			(r,g,b,a) = pixels[x,y]
+			pixels[x,y] = (255-r,255-g,255-b,255-a)
+
+def invertPixelsNotAlpha(img):
+	pixels = img.load()
+	width = img.size[0]
+	height = img.size[1]	
+	for x in xrange(0,width):
+		for y in xrange(0,height):
+			(r,g,b,a) = pixels[x,y]
+			pixels[x,y] = (255-r,255-g,255-b,a)
+	
+			
+def thresholdAbove(img,r0,g0,b0,a0,r1,g1,b1,a1):
+	pixels = img.load()
+	width = img.size[0]
+	height = img.size[1]	
+	for x in xrange(0,width):
+		for y in xrange(0,height):
+			(r,g,b,a) = pixels[x,y]
+			if r < r0 or g < g0 or b < b0 or a < a0:
+				pixels[x,y] = (r1,g1,b1,a1)
+	
+def drawFeltTipPen(pixels,R,radius,r,g,b,a,x,y):
+	try:
+		drawPixelAddAlpha(pixels,r,g,b,a,x,y)
+	except:
+		print "Plot error 1 "+str(x)+" "+str(y)
+	if R.random() > 0.995:
+		try:
+			drawPointInky(pixels,int(radius),r,g,b,a,x,y)
+		except:
+			print "Plot error 2 "+str(x)+" "+str(y)
+	if R.random() > 0.995:
+		try:
+			drawPointInkyDrops(pixels,R.randint(1,radius*3),r,g,b,1,x,y) # Add noise to x and y?
+		except:
+			print "Plot error 3 "+str(x)+" "+str(y)
+		# drawLineInkySplodge(pixels,direction,distance,r,g,b,a,x,y)
+	
+
+def drawCircleSmooshy(img,radius,r,g,b,a,x,y,z):
+	return img
+
+def drawPointInkyDrops(pixels,radius,r,g,b,a,x,y):
+	R = Random()
+	radiusO = radius
+	for i in xrange(0,R.randint(1,3)):
+		tr = int(radiusO/(i+1))
+		if tr < 1:
+			tr = 1
+		radius = abs(R.randint(1,tr)+1)
+		a = a - R.randint(1,16)
+		if a < 1:
+			a = 1
+		dx = R.randint(-2*radiusO,2*radiusO)
+		dy = R.randint(-2*radiusO,2*radiusO)
+#		print x,y,dx,dy,x+dx,y+dy
+		drawPointInky(pixels,radius,r,g,b,a,x+dx,y+dy)
+
+def drawLineInky(pixels,direction,distance,r,g,b,a,x,y):
+	for i in xrange(0,int(distance)):
+		posx = x+float(i)*cos(direction)
+		posy = y+float(i)*sin(direction)
+		drawPixelAddAlpha(pixels,r,g,b,a,posx,posy)
+
+def drawLineInkySplodge(pixels,direction,distance,r,g,b,a,x,y):
+	for i in xrange(0,int(distance)):
+		posx = x+float(i)*cos(direction)
+		posy = y+float(i)*sin(direction)
+		drawPixelAddAlpha(pixels,r,g,b,a,posx,posy)
+		if random() > random():
+			drawPointInkyDrops(pixels,distance-i,r,g,b,a,x,y)
+	
+def drawPointInkyMessy(pixels,radius,r,g,b,a,x,y):
+	R = Random()
+	radiusO = radius
+	for i in xrange(0,R.randint(1,7)):
+		tr = radiusO-i
+		if tr < 1:
+			tr = 1
+		radius = abs(R.randint(1,tr)+1)
+		a = a - R.randint(1,16)
+		if a < 1:
+			a = 1
+		dx = R.randint(-radius,radius)
+		dy = R.randint(-radius,radius)
+		drawPointInky(pixels,radius,r,g,b,a,x+dx,y+dy)
+	
+def drawPointInky(pixels,radius,r,g,b,a,x,y):
+	#pixels = img.load()
+	# draw a blob here
+	radiusSq = radius*radius
+	for x0 in xrange(-radius,radius+1):
+		for y0 in xrange(-radius,radius+1):
+			if (x0**2 + y0**2) <= radiusSq:
+				drawPixelAddAlpha(pixels,r,g,b,a,x+x0,y+y0)
+
+def drawPixelAddAlpha(pixels,r,g,b,a,x,y):
+	#print x,y
+	(r0,g0,b0,a0) = pixels[x,y]
+	r1 = r0+r
+	g1 = g0+g
+	b1 = b0+b
+	a1 = a0+a
+	if r1 > 255:
+		r1 = 255
+	if g1 > 255:
+		g1 = 255
+	if b1 > 255:
+		b1 = 255
+	if a1 > 255:
+		a1 = 255
+	pixels[x,y] = (r1,g1,b1,a1)
+
+def drawPixel(pixels,r,g,b,a,x,y):
+	pixels[x,y] = (r,g,b,a)	
+
+#	pixels[x,y] = ((r0+r)%0xff,(g0+g)%0xff,(b0+b)%0xff,(a0+a)%0xff)
+
+def intToCircle(i,max):
+	j = float(2.0*pi * float(i) / float(max) )
+	return j%max
+	
+def drawLine(scratchpad, block, p, q ):
+	drawLineConstrained(scratchpad, block, p, q, 0 )
+
+def drawLineWithAlpha(scratchpad, block, p, q ):
+	drawLineConstrainedWithAlpha(scratchpad, block, p, q, 0 )
+	
+def drawLineConstrained(pixels, b, p, q, maxLength ):
+	(blockID, blockData) = b
+	(x,y,z) = p
+	(x1,y1,z1) = q
+	dx = x1 - x
+	dy = y1 - y
+	dz = z1 - z
+
+	distHoriz = dx*dx + dy*dy
+	distance = sqrt(dz*dz + distHoriz)
+
+	if distance < maxLength or maxLength < 1:
+		phi = atan2(dz, sqrt(distHoriz))
+		theta = atan2(dy, dx)
+
+		iter = 0
+		while iter <= distance:
+			setBlock(pixels,(blockID,blockData),((int)(x+iter*cos(theta)*cos(phi)), (int)(y+iter*sin(theta)*cos(phi)), (int)(z+iter*sin(phi)) ))
+			iter = iter+0.5 # slightly oversample because I lack faith.
+			
+def drawLineConstrainedWithAlpha(pixels, b, p, q, maxLength ):
+	(blockID, blockData) = b
+	(x,y,z) = p
+	(x1,y1,z1) = q
+	(r0,g0,b0,a0) = blockID
+	dx = x1 - x
+	dy = y1 - y
+	dz = z1 - z
+
+	distHoriz = dx*dx + dz*dz
+	distance = sqrt(dy*dy + distHoriz)
+
+	if distance < maxLength or maxLength < 1:
+		phi = atan2(dy, sqrt(distHoriz))
+		theta = atan2(dz, dx)
+
+		iter = 0
+		while iter <= distance:
+			x2 = (int)(x+iter*cos(theta)*cos(phi))
+			y2 = (int)(y+iter*sin(phi))
+			z2 = (int)(z+iter*sin(theta)*cos(phi))
+			(r,g,b,a) = pixels[x2,y2]
+			if a > 0:
+				a = a-1
+			setBlock(pixels,(((r0+r)%0xff,(g0+g)%0xff,(b0+b)%0xff,(a)%0xff),blockData),(x2, y2, z2))
+			iter = iter+0.5 # slightly oversample because I lack faith.
+			
+def chaikinSmoothAlgorithm(P): # http://www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm.html
+	F1 = 0.25
+	F2 = 0.75
+	Q = []
+	(x0,y0,z0) = (-1,-1,-1)
+	count = 0
+	for (x1,y1,z1) in P:
+		if count > 0: # We have a previous point
+			(dx,dy,dz) = (x1-x0,y1-y0,z1-z0)
+			Q.append( (x0*F2+x1*F1,y0*F2+y1*F1,z0*F2+z1*F1) )
+			Q.append( (x0*F1+x1*F2,y0*F1+y1*F2,z0*F1+z1*F2) )
+		else:
+			count = count+1
+		(x0,y0,z0) = (x1,y1,z1)
+
+	return Q
+			
+def setBlock(pixels,b,p):
+	# (mx,my) = pixels
+	(ID,Data) = b
+	(x,y,z) = p
+
+	pixels[x,y] = ID
+	
+def Factorise(number):
+	Q = []
+	
+	n = number
+	
+	for iter in xrange(1,(int)(n)):
+		p = (int)(n/iter)
+		if n - (p * iter) == 0:
+			if iter not in Q:
+				Q.append(iter)
+			if p not in Q:
+				Q.append(p)
+	return Q
+		
+def makePathUnique(P):
+	Q = []
+	(prevX,prevY,prevZ) = (int(-1),int(-1),int(-1)) # Dummy
+	for (x,y,z) in P:
+		if (int(x),int(y),int(z)) != (int(prevX),int(prevY),int(prevZ)):
+			Q.append((x,y,z))
+			(prevX,prevY,prevZ) = (int(x),int(y),int(z))
+#		else: # Debug
+#			print "Duplicate discarded: "+str(x)+",	"+str(y)+", "+str(z)
+	return Q
+	
+def flatten(anArray):
+	result = []
+	for a in anArray:
+		for b in a:
+			result.append(b)
+	return result
+	
+# Ye Olde GFX Libraries
+def cosineInterpolate(a, b, x): # http://www.minecraftforum.net/forums/off-topic/computer-science-and-technology/482027-generating-perlin-noise?page=40000
+	ft = pi * x
+	f = ((1.0 - cos(ft)) * 0.5)
+	ret = float(a * (1.0 - f) + b * f)
+	return ret
+
+def cnoise(x,y,z):
+	# Return the value of interpolated noise at this location
+	return float(Random(x+(y<<4)+(z<<8)).random())
+
+def noise(x,y,z):
+	ss = 8
+	bs = 3
+	cx = x >> bs
+	cy = y >> bs
+	cz = z >> bs
+
+	rdx = float((float(x%ss))/ss)
+	rdy = float((float(y%ss))/ss)
+	rdz = float((float(z%ss))/ss)
+#	print rdx,rdy,rdz
+	
+	# current noise cell
+	P = zeros((2,2,2))
+	for iy in xrange(0,2):
+		for iz in xrange(0,2):
+			for ix in xrange(0,2):
+				P[ix,iy,iz] = float(cnoise(cx+ix,cy+iy,cz+iz))
+	
+	# print P
+
+	dvx1 = cosineInterpolate(P[0,0,0],P[1,0,0],rdx)
+	dvx2 = cosineInterpolate(P[0,1,0],P[1,1,0],rdx)
+	dvx3 = cosineInterpolate(P[0,0,1],P[1,0,1],rdx)
+	dvx4 = cosineInterpolate(P[0,1,1],P[1,1,1],rdx)
+
+	dvz1 = cosineInterpolate(dvx1,dvx3,rdz)
+	dvz2 = cosineInterpolate(dvx2,dvx4,rdz)
+
+	n = cosineInterpolate(dvz1,dvz2,rdy)
+	
+	return n
+
+def drawTriangle(level, (p1x, p1y, p1z), (p2x, p2y, p2z), (p3x, p3y, p3z), materialEdge, materialFill):
+	if materialFill != (0,0):
+		# for each step along the 'base' draw a line from the apex
+		dx = p3x - p2x
+		dy = p3y - p2y
+		dz = p3z - p2z
+
+		distHoriz = dx*dx + dz*dz
+		distance = sqrt(dy*dy + distHoriz)
+		
+		phi = atan2(dy, sqrt(distHoriz))
+		theta = atan2(dz, dx)
+
+		iter = 0
+		while iter <= distance:
+			(px, py, pz) = ((int)(p2x+iter*cos(theta)*cos(phi)), (int)(p2y+iter*sin(phi)), (int)(p2z+iter*sin(theta)*cos(phi)))
+			
+			iter = iter+0.5 # slightly oversample because I lack faith.
+			drawLine(level, materialFill, (px, py, pz), (p1x, p1y, p1z) )
+	
+	
+	drawLine(level, materialEdge, (p1x, p1y, p1z), (p2x, p2y, p2z) )
+	drawLine(level, materialEdge, (p1x, p1y, p1z), (p3x, p3y, p3z) )
+	drawLine(level, materialEdge, (p2x, p2y, p2z), (p3x, p3y, p3z) )
+
+def drawTriangleEdge(level, box, options, (p1x, p1y, p1z), (p2x, p2y, p2z), (p3x, p3y, p3z), materialEdge):
+	drawLine(level, materialEdge, (p1x, p1y, p1z), (p2x, p2y, p2z) )
+	drawLine(level, materialEdge, (p1x, p1y, p1z), (p3x, p3y, p3z) )
+	drawLine(level, materialEdge, (p2x, p2y, p2z), (p3x, p3y, p3z) )
+
+def calcLine((x,y,z), (x1,y1,z1) ):
+	return calcLineConstrained((x,y,z), (x1,y1,z1), 0 )
+			
+def calcLinesSmooth(SMOOTHAMOUNT,P):
+	Q = []
+	for i in xrange(0,SMOOTHAMOUNT):
+		P = chaikinSmoothAlgorithm(P)
+	Q = calcLines(P)
+	return flatten(Q)
+
+def calcLines(P):
+	Q = []
+	count = 0
+	(x0,y0,z0) = (0,0,0)
+	for (x,y,z) in P:
+		if count > 0:
+			Q.append( calcLine((x0,y0,z0),(x,y,z)) )
+		count = count+1
+		(x0,y0,z0) = (x,y,z)
+	return Q
+	
+def calcLineConstrained((x,y,z), (x1,y1,z1), maxLength ):
+	dx = x1 - x
+	dy = y1 - y
+	dz = z1 - z
+
+	distHoriz = dx*dx + dz*dz
+	distance = sqrt(dy*dy + distHoriz)
+	P = []
+	if distance < maxLength or maxLength < 1:
+		phi = atan2(dy, sqrt(distHoriz))
+		theta = atan2(dz, dx)
+
+		iter = 0
+		while iter <= distance:
+			(xd,yd,zd) = ((int)(x+iter*cos(theta)*cos(phi)), (int)(y+iter*sin(phi)), (int)(z+iter*sin(theta)*cos(phi)))
+			# setBlock(scratchpad,(blockID,blockData),xd,yd,zd)
+			P.append((xd,yd,zd))
+			iter = iter+0.5 # slightly oversample because I lack faith.
+	return P # The set of all the points calc'd
