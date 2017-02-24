@@ -30,7 +30,7 @@ def mainLoop():
 	# Init
 
 	tweetbot = initMarkovBot() # Required for supporting conversations
-	tweetPrefixDefault = "@abrightmoore, I made this. "
+	tweetPrefixDefault = "I made this. "
 	max_ids = loadStringsFromFile(GAMENAME,"MAXID.txt")
 	max_id = int(max_ids[len(max_ids)-1])
 	
@@ -105,7 +105,9 @@ def beCreative(width,height,postToName):
 	elif len(images) > 2:
 		for i in xrange(1,len(images)):
 			resultImg = mergeImages(images[i],resultImg, "Blend" )
-
+	alphaAvg = checkAverageAlpha(img)
+	if alphaAvg < 64:
+		collapseAlpha(resultImg)
 	return resultImg
 		
 # STATIC STRINGS AND OTHER THINGS
