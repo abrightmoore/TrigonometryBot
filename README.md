@@ -8,6 +8,7 @@ Check its work on Twitter as https://twitter.com/TrigonometryBot/with_replies
 # Dependencies
 1. markovbot from @esdalmaijer. Use for witty conversation. Get it via: https://github.com/esdalmaijer/markovbot
 2. TwitterAPI by @boxnumber03. Wrapper to communicate via Twitter. Get it via: https://dev.twitter.com/resources/twitter-libraries
+3. I have not included my Twitter API keys. You put yours in a file called: AJB_TrigonometryBot_TwitterKeys.txt local to the script, with the order passed to the TwitterAPI constructor (basically the order on the form on Twitter's API form). Hit me up if you have issues.
 
 # How it works
 1. AJB_TrigonometryBot_v9.py is the main module. It connects to Twitter and manages the work/sleep cycle. This bot is lazy so it doesn't get kicked by Twitter.
