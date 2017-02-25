@@ -1,5 +1,5 @@
 # @abrightmoore
-
+from numpy import *
 from math import sqrt, tan, sin, cos, pi, ceil, floor, acos, atan, asin, degrees, radians, log, atan2
 import os
 import time
@@ -7,6 +7,7 @@ from random import randint, random, Random
 import io
 from io import BytesIO
 import sys
+
 
 from PIL import Image, ImageDraw
 
@@ -21,10 +22,34 @@ def createImgWithRules(width,height,formulaR,formulaG,formulaB):
 	img = Image.new('RGBA', size=(width, height), color=(128, 100, 64))
 	# Choose what type of image to create
 	chance = random()
-	if chance < 0.05:
+	if chance < 0.03:
 		print "Making squiggly lines"
 		img = InkSplodgyWiggleLinesCol(img)
-	elif chance < 0.1:
+	elif chance < 0.06:
+		print "Making an InkSplodgyLineSpiralWiggleLines"
+		InkSplodgyLineSpiralWiggleLines(img)
+	elif chance < 0.09:
+		print "Making a InkSplodgyWiggleLines"		
+		InkSplodgyWiggleLines(img)
+	elif chance < 0.12:
+		print "InkSplodgyLineSpiralWiggle"
+		InkSplodgyLineSpiralWiggle(img)
+	elif chance < 0.15:
+		print "InkSplodgyLineSpiral"		
+		InkSplodgyLineSpiral(img)
+	elif chance < 0.18:
+		print "InkSplodgy"		
+		InkSplodgy(img)
+	elif chance < 0.25:
+		print "Making a SquaresInk"
+		SquaresInk(img)
+	elif chance < 0.35:
+		print "Making a ColourSwatch"
+		makeColourSwatch(img)
+	elif chance < 0.55:
+		print "Making an InterferenceImage"
+		makeInterferenceImage(img)
+	elif chance < 0.65:
 		print "Making a TrigImage with spheres"
 		makeTrigImage(img,formulaR,formulaG,formulaB)
 		pix = img.load()
@@ -43,37 +68,16 @@ def createImgWithRules(width,height,formulaR,formulaG,formulaB):
 			px = randint(radius,width-radius-1)
 			py = randint(radius,height-radius-1)
 			drawTrigSphere(pix,px,py,radius,f1,f2,f3)
-	elif chance < 0.15:
-		print "Making a ColourSwatch"
-		makeColourSwatch(img)
-	elif chance < 0.20:
-		print "Making an InterferenceImage"
-		makeInterferenceImage(img)
-	elif chance < 0.25:
-		print "Making an InkSplodgyLineSpiralWiggleLines"
-		InkSplodgyLineSpiralWiggleLines(img)
-	elif chance < 0.30:
-		print "Making a SquaresInk"
-		SquaresInk(img)
-	elif chance < 0.31:
-		print "Making a InkSplodgyWiggleLines"		
-		InkSplodgyWiggleLines(img)
-	elif chance < 0.32:
-		print "InkSplodgyLineSpiralWiggle"
-		InkSplodgyLineSpiralWiggle(img)
-	elif chance < 0.33:
-		print "InkSplodgyLineSpiral"		
-		InkSplodgyLineSpiral(img)
-	elif chance < 0.44:
-		print "InkSplodgy"		
-		InkSplodgy(img)
-	elif chance < 0.80:
+	elif chance < 0.85:
+		print "Making a TrigImage"
+		makeTrigImage(img,formulaR,formulaG,formulaB)
+	elif chance < 0.98:
 		print "Making a blendedImage"
 		ox,oy,sx,sy = (-2.0,-1.5,3.0,3.0)
 #               ox,oy,sx,sy = (-1.108,-0.230,0.005,0.005)
 		methods = ["Circle","Spike","Blend","Spike","Blend","Spike","Blend","Spike","Blend","Spike","Blend"]
 		imgArray = []
-		for i in xrange(0,8):
+		for i in xrange(0,5): # This section finds a deep layer in the Mandelbrot
 			(new_ox,new_oy,new_sx,new_sy) = drawMandelbrot(img,ox,oy,sx,sy)
 			# filename = "AJTrimage_"+str(width)+"_"+str(ox)+"_"+str(oy)+"_"+str(sx)+"_"+str(sy)+"_"+formulaR+"_"+formulaG+"_"+formulaB+".png"
 			# img.save(filename)
@@ -84,7 +88,7 @@ def createImgWithRules(width,height,formulaR,formulaG,formulaB):
 			sx = new_sx
 			sy = new_sy
 			imgArray.append(img)
-		if len(imgArray) > 0:
+		if len(imgArray) > 1:
 			img = imgArray[randint(1,len(imgArray)-1)] # Choose one of the images generated
 
 			trigImg = Image.new('RGBA', size=(width, height), color=(0, 0, 0))
@@ -97,12 +101,11 @@ def createImgWithRules(width,height,formulaR,formulaG,formulaB):
 			if random() < 0.3:
 				writingImg = InkSplodgyWiggleLinesCol(img)
 				img = mergeImages(writingImg,img, "Spike" )
+		else:
+			return imgArray[0]
 		# for imgA in imgArray:
 			# filename = "AJMandelbrot_"+str(width)+"_"+str(ox)+"_"+str(oy)+"_"+str(sx)+"_"+str(sy)+"_"+str(randint(111111111,999999999))+".png"
 			# imgA.save(filename)
-	elif chance < 0.98:
-		print "Making a TrigImage"
-		makeTrigImage(img,formulaR,formulaG,formulaB)
 	else: # A curvy graph
 		print "Making a TrigFuncGraphImage"
 		makeTrigFuncGraphImage(img,formulaR,formulaG,formulaB)
@@ -110,6 +113,24 @@ def createImgWithRules(width,height,formulaR,formulaG,formulaB):
 	# collapseAlpha(img)
 	return img
 
+def createNoiseImage(img):
+	width = img.size[0]
+	height = img.size[1]
+
+#        C = getComplementaryColours(randint(3,128))
+	C = []
+	if randint(1,5) < 4:
+		C = getRandomAnalogousColours()
+	else:
+		C = getRandomComplementaryColours()
+
+	p = img.load()
+	z = randint(0,1000000000)
+	for y in xrange(0,width):
+		for x in xrange(0,width):
+			n = noise(x,y,z)
+			p[x,y] = C[int(abs(float(n*len(C))))%len(C)]
+			
 def createImgFile(width,height,author): # DEPRECATED
 	# In memory file method used is by Rolo http://wildfish.com/blog/2014/02/27/generating-in-memory-image-for-tests-python/
 	FILENAMEIMAGE = '@abrightmoore_@TrigonometryBot_output.png'
@@ -2025,3 +2046,46 @@ def calcLineConstrained((x,y,z), (x1,y1,z1), maxLength ):
 			P.append((xd,yd,zd))
 			iter = iter+0.5 # slightly oversample because I lack faith.
 	return P # The set of all the points calc'd
+
+def cosineInterpolate(a, b, x): # http://www.minecraftforum.net/forums/off-topic/computer-science-and-technology/482027-generating-perlin-noise?page=40000
+	ft = pi * x
+	f = ((1.0 - cos(ft)) * 0.5)
+	ret = float(a * (1.0 - f) + b * f)
+	return ret
+	
+def cnoise(x,y,z):
+	# Return the value of interpolated noise at this location
+	return float(Random(x+(y<<4)+(z<<8)).random())
+
+def noise(x,y,z):
+	ss = 8
+	bs = 3
+	cx = x >> bs
+	cy = y >> bs
+	cz = z >> bs
+
+	rdx = float((float(x%ss))/ss)
+	rdy = float((float(y%ss))/ss)
+	rdz = float((float(z%ss))/ss)
+#	print rdx,rdy,rdz
+	
+	# current noise cell
+	P = zeros((2,2,2))
+	for iy in xrange(0,2):
+		for iz in xrange(0,2):
+			for ix in xrange(0,2):
+				P[ix,iy,iz] = float(cnoise(cx+ix,cy+iy,cz+iz))
+	
+	# print P
+
+	dvx1 = cosineInterpolate(P[0,0,0],P[1,0,0],rdx)
+	dvx2 = cosineInterpolate(P[0,1,0],P[1,1,0],rdx)
+	dvx3 = cosineInterpolate(P[0,0,1],P[1,0,1],rdx)
+	dvx4 = cosineInterpolate(P[0,1,1],P[1,1,1],rdx)
+
+	dvz1 = cosineInterpolate(dvx1,dvx3,rdz)
+	dvz2 = cosineInterpolate(dvx2,dvx4,rdz)
+
+	n = cosineInterpolate(dvz1,dvz2,rdy)
+	
+	return n

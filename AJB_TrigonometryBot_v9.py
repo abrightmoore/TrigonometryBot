@@ -18,7 +18,7 @@ from Trigpic import *
 
 TWITTERLIMIT = 140 # Characters
 GAMENAME = "AJB_TrigonometryBot"
-GAMEVER = 4.0
+GAMEVER = 9.0
 FILENAMEIMAGE = '@abrightmoore_@TrigonometryBot_output.png'
 MYNAME = "TrigonometryBot"
 PREVIMG = None
@@ -319,9 +319,9 @@ def handleMentions(api,max_id,tweetbot):
 				
 				# parse the original message for words to use in replying
 				seedword = msg.split()
-				
+				#size = width,height
+				#imgA = img.thumbnail(size, Image.ANTIALIAS) # Constrain the result size to prevent upload issues via Twitter API
 				tweet_text = getTweetText(tweetbot,replyToName+", I made this for you because you asked nicely.\n",seedword) # Conversation management goes here
-				
 				while len(tweet_text) > TWITTERLIMIT: # Twitter limit
 					tweet_text = getTweetText(tweetbot,replyToName,seedword)
 				print tweet_text
