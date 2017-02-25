@@ -1,5 +1,5 @@
 # @abrightmoore
-from numpy import *
+# from numpy import *
 from math import sqrt, tan, sin, cos, pi, ceil, floor, acos, atan, asin, degrees, radians, log, atan2
 import os
 import time
@@ -1197,7 +1197,8 @@ def SquaresInk(img): # Reference
 			posX = posX+charSizeW		
 		posY = posY+charSizeH			
 	#img.save(filename+".png")
-	invertPixelsNotAlpha(img)
+	if random() > 0.3:
+		invertPixelsNotAlpha(img)
 	#img.save(filename+"_i.png")
 	#print filename
 	#print "Complete"

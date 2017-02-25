@@ -306,13 +306,20 @@ def handleMentions(api,max_id,tweetbot):
 						usrimg.save("UserImage_"+str(randint(1000000,9999999))+".png")
 						usrimgrgba = usrimg.convert("RGBA")
 						size = width,height
-						usrimgrgba.thumbnail(size, Image.ANTIALIAS)
-						sx = usrimg.size[0]
-						sy = usrimg.size[1]
-						if sx >= width and sy >= height:
-							img = mergeImages(usrimgrgba,img, "Circle" )
-						else:
-							print "An image was supplied by the user which is too small to use: "+str(sx)+","+str(sy)
+						sx = usrimgrgba.size[0]
+						sy = usrimgrgba.size[1]
+
+						if sx > width or sy > height:
+							usrimgrgba = usrimgrgba.resize((width,height), Image.ANTIALIAS)
+							# usrimgrgba.thumbnail(size, Image.ANTIALIAS)
+						sx = usrimgrgba.size[0]
+						sy = usrimgrgba.size[1]
+
+						#if sx >= width and sy >= height:
+						#	print sx,sy
+						img = mergeImages(usrimgrgba,img, "Blend" )
+						#else:
+						#	print "An image was supplied by the user which is too small to use: "+str(sx)+","+str(sy)
 					img.save("ResultImage_"+str(randint(1000000,9999999))+".png")
 
 				
@@ -320,7 +327,7 @@ def handleMentions(api,max_id,tweetbot):
 				# parse the original message for words to use in replying
 				seedword = msg.split()
 				#size = width,height
-				#imgA = img.thumbnail(size, Image.ANTIALIAS) # Constrain the result size to prevent upload issues via Twitter API
+				#img.thumbnail(size, Image.ANTIALIAS) # Constrain the result size to prevent upload issues via Twitter API
 				tweet_text = getTweetText(tweetbot,replyToName+", I made this for you because you asked nicely.\n",seedword) # Conversation management goes here
 				while len(tweet_text) > TWITTERLIMIT: # Twitter limit
 					tweet_text = getTweetText(tweetbot,replyToName,seedword)
