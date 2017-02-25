@@ -8,6 +8,7 @@ from random import randint, random, Random
 import io
 from io import BytesIO
 import sys
+import urllib2 as urllib
 
 from PIL import Image, ImageDraw
 from TwitterAPI import TwitterAPI # by @boxnumber03 https://dev.twitter.com/resources/twitter-libraries. Wrapper to communicate via Twitter
@@ -44,7 +45,7 @@ def mainLoop():
 	restTimeMax = 300 # Five minutes
 	restTime = restTimeDefault # when it is time to sleep, how long to sleep for
 	CREATIVEQUANTUM = 0.03
-	moodCreative = 0.6 # How likely I will create _something_ when tested
+	moodCreative = 0.06 # How likely I will create _something_ when tested
 	jobsComplete = 0
 	# Wake periodically and decide what to do
 	while iAmAwake == True:
@@ -53,7 +54,7 @@ def mainLoop():
 		if random() <= moodCreative:
 			moodCreative = moodCreative/2 # Diminishing interest in creating something
 			
-			img = beCreative(height,width,"@"+MYNAME)
+			img = beCreative(width,height,"@"+MYNAME)
 
 			# newFile = createImgFile(height,width,"@"+MYNAME) # Create something
 			# To Do: Adjust image based on 'mood' or how 'tired' I am
@@ -96,7 +97,7 @@ def beCreative(width,height,postToName):
 			keepGoing = False
 	
 	resultImg = images[0]
-	print len(images)
+	# print len(images)
 	if len(images) == 2:
 		if random() < 0.2:
 			resultImg = mergeImages(images[0],images[1], "Circle" )
@@ -106,8 +107,10 @@ def beCreative(width,height,postToName):
 		for i in xrange(1,len(images)):
 			resultImg = mergeImages(images[i],resultImg, "Blend" )
 	alphaAvg = checkAverageAlpha(img)
-	if alphaAvg < 64:
+	if alphaAvg < 32:
 		collapseAlpha(resultImg)
+	if random() > 0.7:
+		circlePic(resultImg)
 	return resultImg
 		
 # STATIC STRINGS AND OTHER THINGS
@@ -195,13 +198,14 @@ def handleMentions(api,max_id,tweetbot):
 	height = 640
 	width = 640
 	jobsComplete = 0
-
+	NUM_TWEET_FETCH = 20
+	
 	r = None
 	if max_id != 0:
 		# print max_id
-		r = api.request('statuses/mentions_timeline', {'count':1,'since_id':max_id})
+		r = api.request('statuses/mentions_timeline', {'count':NUM_TWEET_FETCH,'since_id':max_id})
 	else:
-		r = api.request('statuses/mentions_timeline', {'count':20})
+		r = api.request('statuses/mentions_timeline', {'count':NUM_TWEET_FETCH})
 	print('Message poll complete' if r.status_code == 200 else str(r.status_code))
 	if r.status_code == 200:
 		for status in r:
@@ -214,7 +218,7 @@ def handleMentions(api,max_id,tweetbot):
 			msg = status["text"].encode("ascii", "ignore")
 
 			handleMention = True			
-			if replyToName in ADMIN and handleMention == True:
+			if replyToName in ADMIN and handleMention == True: # Pre-parser for command handling from users with elevated privilege (see files)
 				# Check if an Admin command has been issued
 				pos = msg.find("Remember") # Pop back into memory for details of an image
 				if pos > 0:
@@ -245,7 +249,7 @@ def handleMentions(api,max_id,tweetbot):
 					postToTwitter_File(api,newFile,tweet_text,id)
 					handleMention = False
 
-			pos = msg.find("Rule") # Force render a picture
+			pos = msg.find("Rule") # Force render a trig picture (the colourful ones)
 			if pos > 0 and handleMention == True:
 				posR = msg.find("R:")
 				posG = msg.find("G:")
@@ -270,37 +274,49 @@ def handleMentions(api,max_id,tweetbot):
 				l = len(msg)-1
 				print "Message: "+msg+"\nLength: "+str(l)
 				# First pass...
-#				formulaR = msg[:-int(l/3)*2].strip()
-#				formulaG = msg[int(l/3)+1:-int(l/3)].strip()
-#				formulaB = msg[int(l/3)*2:].strip()
-#				if random() > 0.8:
-#					(formulaR,formulaG,formulaB) = getFormulas()
-				# Whittle a little: make the formulas a bit more compact
-
-#				if len(formulaR) > 1:
-#					formulaR = formulaR[randint(1,len(formulaR)-1):].strip()
-#				if len(formulaG) > 1:
-#					formulaG = formulaG[randint(1,len(formulaG)-1):].strip()
-#				if len(formulaB) > 1:
-#					formulaB = formulaB[randint(1,len(formulaB)-1):].strip()
-
-#				print "R: "+formulaR
-#				print "G: "+formulaG
-#				print "B: "+formulaB
-				
-#				img = Image.new('RGBA', size=(640, 480), color=(0, 0, 0))
-				img = beCreative(height,width,replyToName)
+				img = beCreative(width,height,replyToName)
 				# Choose what type of image to create
-#				if True:
-					# (formulaR,formulaG,formulaB) = getFormulas(R)
-#					makeTrigImage(img,formulaR,formulaG,formulaB)
-#					memoryAppend((formulaR,formulaG,formulaB,replyToName))
 				
-#				newFile = BytesIO()	
-#				img.save(newFile, 'png')
-#				newFile.name = FILENAMEIMAGE
-#				newFile.seek(0)
+				# If the requester has posted an image, let's use it in the composition!
+				print status
+				
+				if len(status["entities"]) > 0 and "media" in status["entities"].keys():
+					medias = status["entities"]["media"]
+					userImgs = []
+					for m in medias:
+						url = m["media_url"]
+						try:
+							fd = urllib.urlopen(url)
+							image_file = io.BytesIO(fd.read())
+							im = Image.open(image_file)
+							userImgs.append(im)
+						except:
+							print "Unable to load image "+url
+						url = m["media_url_https"]
+						try:
+							fd = urllib.urlopen(url)
+							image_file = io.BytesIO(fd.read())
+							im = Image.open(image_file)
+							userImgs.append(im)
+						except:
+							print "Unable to load image "+url
+					
+					if len(userImgs) > 0:
+						usrimg = userImgs[randint(0,len(userImgs)-1)] # Local copy while testing
+						usrimg.save("UserImage_"+str(randint(1000000,9999999))+".png")
+						usrimgrgba = usrimg.convert("RGBA")
+						size = width,height
+						usrimgrgba.thumbnail(size, Image.ANTIALIAS)
+						sx = usrimg.size[0]
+						sy = usrimg.size[1]
+						if sx >= width and sy >= height:
+							img = mergeImages(usrimgrgba,img, "Circle" )
+						else:
+							print "An image was supplied by the user which is too small to use: "+str(sx)+","+str(sy)
+					img.save("ResultImage_"+str(randint(1000000,9999999))+".png")
 
+				
+				
 				# parse the original message for words to use in replying
 				seedword = msg.split()
 				

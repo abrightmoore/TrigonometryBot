@@ -18,7 +18,7 @@ def createImage(width,height):
 
 def createImgWithRules(width,height,formulaR,formulaG,formulaB):
 
-	img = Image.new('RGBA', size=(width, height), color=(0, 0, 0))
+	img = Image.new('RGBA', size=(width, height), color=(128, 100, 64))
 	# Choose what type of image to create
 	chance = random()
 	if chance < 0.05:
@@ -55,16 +55,16 @@ def createImgWithRules(width,height,formulaR,formulaG,formulaB):
 	elif chance < 0.30:
 		print "Making a SquaresInk"
 		SquaresInk(img)
-	elif chance < 0.33:
+	elif chance < 0.31:
 		print "Making a InkSplodgyWiggleLines"		
 		InkSplodgyWiggleLines(img)
-	elif chance < 0.36:
+	elif chance < 0.32:
 		print "InkSplodgyLineSpiralWiggle"
 		InkSplodgyLineSpiralWiggle(img)
-	elif chance < 0.39:
+	elif chance < 0.33:
 		print "InkSplodgyLineSpiral"		
 		InkSplodgyLineSpiral(img)
-	elif chance < 0.42:
+	elif chance < 0.44:
 		print "InkSplodgy"		
 		InkSplodgy(img)
 	elif chance < 0.80:
@@ -106,7 +106,8 @@ def createImgWithRules(width,height,formulaR,formulaG,formulaB):
 	else: # A curvy graph
 		print "Making a TrigFuncGraphImage"
 		makeTrigFuncGraphImage(img,formulaR,formulaG,formulaB)
-
+	# img.save("Testimage"+str(randint(111111111,999999999))+".png")
+	# collapseAlpha(img)
 	return img
 
 def createImgFile(width,height,author): # DEPRECATED
@@ -172,6 +173,10 @@ def mergeImages(img1,img2,strategy):
 	# Assumes both images are the same dimensions
 	width = img1.size[0]
 	height = img1.size[1]
+	width2 = img2.size[0]
+	height2 = img2.size[1]
+	gapx = (width-width2)>>1
+	gapy = (height-height2)>>1
 	cw = width >>1
 	ch = height >>1
 	img = Image.new('RGBA', size=(width, height), color=(0, 0, 0))
@@ -211,10 +216,10 @@ def mergeImages(img1,img2,strategy):
 				dy = ch - y
 				dist = distx + dy**2
 				if dist > rad2:
-					pix[x,y] = pix2[x,y]
+					pix[x,y] = pix2[(x-gapx)%width2,(y-gapy)%height2]
 				else: # blend
 					(r1,g1,b1,a1) = pix1[x,y]
-					(r2,g2,b2,a2) = pix2[x,y]
+					(r2,g2,b2,a2) = pix2[(x-gapx)%width2,(y-gapy)%height2]
 					ratio = 1.0-sin(abs(float(dist)/float(rad2)*pi/2))
 					# print ratio
 					ratioInv = 1.0-ratio
@@ -1637,22 +1642,82 @@ def thresholdAbove(img,r0,g0,b0,a0,r1,g1,b1,a1):
 				pixels[x,y] = (r1,g1,b1,a1)
 	
 def drawFeltTipPen(pixels,R,radius,r,g,b,a,x,y):
+	error = 0
 	try:
 		drawPixelAddAlpha(pixels,r,g,b,a,x,y)
 	except:
-		print "Plot error 1 "+str(x)+" "+str(y)
+		error = error+1
+		# print "Plot error 1 "+str(x)+" "+str(y)
 	if R.random() > 0.995:
 		try:
 			drawPointInky(pixels,int(radius),r,g,b,a,x,y)
 		except:
-			print "Plot error 2 "+str(x)+" "+str(y)
+			error = error+1
+			# print "Plot error 2 "+str(x)+" "+str(y)
 	if R.random() > 0.995:
 		try:
 			drawPointInkyDrops(pixels,R.randint(1,radius*3),r,g,b,1,x,y) # Add noise to x and y?
 		except:
-			print "Plot error 3 "+str(x)+" "+str(y)
+			error = error+1
+			# print "Plot error 3 "+str(x)+" "+str(y)
 		# drawLineInkySplodge(pixels,direction,distance,r,g,b,a,x,y)
+
+def scaleToMaxIntensity(img):
+	width = img.size[0]
+	height = img.size[1]
+	cw = width>>1
+	ch = height>>1
+	r2 = cw**2
+	pix = img.load()
+	for x in xrange(0,width):
+		dx = x-cw
+		dx2 = dx**2
+		for y in xrange(0,height):
+			dy = y-ch
+			dy2 = dy**2
+			if dx2+dy2 > r2:
+				(r,g,b,a) = pix[x,y]
+				pix[x,y] = (r,g,b,0)	
 	
+def circlePic(img):
+	width = img.size[0]
+	height = img.size[1]
+	cw = width>>1
+	ch = height>>1
+	r2 = cw**2
+	pix = img.load()
+	for x in xrange(0,width):
+		dx = x-cw
+		dx2 = dx**2
+		for y in xrange(0,height):
+			dy = y-ch
+			dy2 = dy**2
+			if dx2+dy2 > r2:
+				(r,g,b,a) = pix[x,y]
+				pix[x,y] = (r,g,b,0)
+		
+def collapseAlpha(img):
+	width = img.size[0]
+	height = img.size[1]
+	
+	pix = img.load()
+	for x in xrange(0,width):
+		for y in xrange(0,height):
+			(r,g,b,a) = pix[x,y]
+			pix[x,y] = (r,g,b,255)
+
+def checkAverageAlpha(img):
+	width = img.size[0]
+	height = img.size[1]
+	
+	pix = img.load()
+	val = 0
+	for x in xrange(0,width):
+		for y in xrange(0,height):
+			(r,g,b,a) = pix[x,y]
+			val = val + a
+	avg = a/(width*height)
+	return avg
 
 def drawCircleSmooshy(img,radius,r,g,b,a,x,y,z):
 	return img
@@ -1666,8 +1731,8 @@ def drawPointInkyDrops(pixels,radius,r,g,b,a,x,y):
 			tr = 1
 		radius = abs(R.randint(1,tr)+1)
 		a = a - R.randint(1,16)
-		if a < 1:
-			a = 1
+		if a < 16:
+			a = 16
 		dx = R.randint(-2*radiusO,2*radiusO)
 		dy = R.randint(-2*radiusO,2*radiusO)
 #		print x,y,dx,dy,x+dx,y+dy
