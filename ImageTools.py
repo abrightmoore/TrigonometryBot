@@ -8,12 +8,31 @@ import sys
 
 from PIL import Image, ImageDraw
 
+def getFormulas():
+	formulaR = makeRandomFormula()
+	formulaG = makeRandomFormula()
+	formulaB = makeRandomFormula()
+	return (formulaR,formulaG,formulaB)
+
+def makeRandomFormula():
+	result = ""
+	funcs = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRS"
+	iters = randint(1,11)
+	for i in xrange(0,iters):
+		result=result+(funcs[randint(0,len(funcs)-1)])
+	return result
+
 def mergeImages(img1,img2,strategy):
 	# Assumes both images are the same dimensions
 	width = img1.size[0]
 	height = img1.size[1]
 	width2 = img2.size[0]
 	height2 = img2.size[1]
+	if width2 != width or height2 != height:
+		img2 = img2.resize((width,height), Image.ANTIALIAS)
+		width2 = img2.size[0]
+		height2 = img2.size[1]
+
 	gapx = (width-width2)>>1
 	gapy = (height-height2)>>1
 	cw = width >>1

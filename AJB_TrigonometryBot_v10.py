@@ -95,7 +95,7 @@ def beCreative(width,height,postToName):
 		
 		images.append(img)
 		
-		if random() < 0.5:
+		if random() > 0.8:
 			keepGoing = False
 	
 	resultImg = images[0]
@@ -108,51 +108,21 @@ def beCreative(width,height,postToName):
 	elif len(images) > 2:
 		for i in xrange(1,len(images)):
 			resultImg = mergeImages(images[i],resultImg, "Blend" )
-	alphaAvg = checkAverageAlpha(img)
-	if alphaAvg < 32:
-		collapseAlpha(resultImg)
+#	alphaAvg = checkAverageAlpha(img)
+#	if alphaAvg < 32:
+#		collapseAlpha(resultImg)
 	if random() > 0.7:
 		circlePic(resultImg)
+	ImageFactory.cacheImage(resultImg)
 	return resultImg
 		
-def beCreative_deprecated(width,height,postToName):
-	""" Creates an image using available strategies to create elements and combine them
-	"""
-	print "I feel creative!"
-	images = [] # A collection of images
-	
-	keepGoing = True
-	while keepGoing == True:
-		img = createImage(width,height)
-		
-		images.append(img)
-		
-		if random() < 0.5:
-			keepGoing = False
-	
-	resultImg = images[0]
-	# print len(images)
-	if len(images) == 2:
-		if random() < 0.2:
-			resultImg = mergeImages(images[0],images[1], "Circle" )
-		else:
-			resultImg = mergeImages(images[0],images[1], "Spike" )
-	elif len(images) > 2:
-		for i in xrange(1,len(images)):
-			resultImg = mergeImages(images[i],resultImg, "Blend" )
-	alphaAvg = checkAverageAlpha(img)
-	if alphaAvg < 32:
-		collapseAlpha(resultImg)
-	if random() > 0.7:
-		circlePic(resultImg)
-	return resultImg
-		
+
 # STATIC STRINGS AND OTHER THINGS
 
 def loadStringsFromFile(filePrefix,fileSuffix):
 	fileName = filePrefix+"_"+fileSuffix
 	fileOfStatements = open(fileName, 'r+')
-	keys = fileOfStatements.read().split()
+	keys = fileOfStatements.read().split("\n")
 	fileOfStatements.close()
 	return keys
 		
@@ -404,193 +374,7 @@ def connectToTwitter():
 	api = TwitterAPI(cons_key,cons_secret,access_token,access_token_secret) # Does this need to be retried?
 	return api
 	
-# Process functions
-def getFormulas():
-	formulaR = makeRandomFormula()
-	formulaG = makeRandomFormula()
-	formulaB = makeRandomFormula()
-	return (formulaR,formulaG,formulaB)
 
-def makeRandomFormula():
-	result = ""
-	funcs = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRS"
-	iters = randint(1,11)
-	for i in xrange(0,iters):
-		result=result+(funcs[randint(0,len(funcs)-1)])
-	return result
-	
-def calcFormula(formula,x,y):
-	# parse formula, substitute parameters, adjust result
-	val = 1.0
-	err = 0
-	for c in formula:
-		if c == "a":
-			val = val* sin(y)
-		elif c == "b":
-			val = val* cos(y)
-		elif c == "c":
-			try:
-				val = val* tan(y)
-			except:
-				err = err+1
-		elif c == "d":
-			val = val* sin(x)
-		elif c == "e":
-			val = val* cos(x)
-		elif c == "f":
-			try:
-				val = val* tan(x)
-			except:
-				err = err+1
-		elif c == "g":
-			val = val* sin(x+y)
-		elif c == "h":
-			val = val* cos(x+y)
-		elif c == "i":
-			try:
-				val = val* tan(x+y)
-			except:
-				err = err+1
-		elif c == "j":
-			val = val* sin(x-y)
-		elif c == "k":
-			val = val* cos(x-y)
-		elif c == "l":
-			try:
-				val = val* tan(x-y)
-			except:
-				err = err+1
-		elif c == "m":
-			if y != 0:
-				val = val* x/y
-		elif c == "n":
-			if x != 0:
-				val = val* y/x
-		elif c == "o":
-			val = val* (x-y)
-		elif c == "p":
-			val = val* (x+y)
-		elif c == "q":
-			val = val* x*y
-		elif c == "r":
-			val = val* atan2(y,x)
-		elif c == "s":
-			val = val* x**2 
-		elif c == "t":
-			val = val* x**3 
-		elif c == "u":
-			try:
-				val = val* asin(x)
-			except:
-				err = err+1
-		elif c == "v":
-			try:
-				val = val* acos(x)
-			except:
-				err = err+1
-		elif c == "w":
-			try:
-				val = val* atan(x)
-			except:
-				err = err+1
-		elif c == "x":
-			try:
-				val = val* hypot(x,y)
-			except:
-				err = err+1
-		elif c == "y":
-			try:
-				val = val* acosh(x)
-			except:
-				err = err+1
-		elif c == "z":
-			try:
-				val = val* asinh(x)
-			except:
-				err = err+1
-		elif c == "A":
-			try:
-				val = val* atanh(x)
-			except:
-				err = err+1
-		elif c == "B":
-			try:
-				val = val* cosh(x)
-			except:
-				err = err+1
-		elif c == "C":
-			try:
-				val = val* sinh(x)
-			except:
-				err = err+1
-		elif c == "D":
-			try:
-				val = val* tanh(x)
-			except:
-				err = err+1
-		elif c == "E":
-			val = val* min(x,y)
-		elif c == "F":
-			val = val* max(x,y)
-
-		elif c == "G":
-			val = val* sin(val)
-		elif c == "H":
-			val = val* cos(val)
-		elif c == "I":
-			try:
-				val = val* tan(val)
-			except:
-				err = err+1
-		elif c == "J":
-			val = val**2
-		elif c == "K":
-			try:
-				val = val* asin(val)
-			except:
-				err = err+1
-		elif c == "L":
-			try:
-				val = val* acos(val)
-			except:
-				err = err+1
-		elif c == "M":
-			try:
-				val = val* atan(val)
-			except:
-				err = err+1
-		elif c == "N":
-			try:
-				val = val* acosh(val)
-			except:
-				err = err+1
-		elif c == "O":
-			try:
-				val = val* asinh(val)
-			except:
-				err = err+1
-		elif c == "P":
-			try:
-				val = val* atanh(val)
-			except:
-				err = err+1
-		elif c == "Q":
-			try:
-				val = val* cosh(x)
-			except:
-				err = err+1
-		elif c == "R":
-			try:
-				val = val* sinh(val)
-			except:
-				err = err+1
-		elif c == "S":
-			try:
-				val = val* tanh(val)
-			except:
-				err = err+1
-			
-	return val
 	
 ##################
 

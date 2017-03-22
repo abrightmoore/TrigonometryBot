@@ -20,11 +20,34 @@ from ImageTools import *
 	Extends work previously done on ABrush
 '''
 
-def makeRandomImage(width,height):
-	# ToDo: consider recovering from cache before making a new image
+def cacheImage(img):
 	pathImages = "images/"
+	filename =  pathImages+"image_"+str(randint(10000000000,99999999999))
+	img.save(filename+".png") # cache it
+
+def cacheImageRecover():
+	extension = "images/*.png"
+
+	# get a list of the available images (from the file system)
+	images = glob.glob(extension)
+	imageName = images[randint(0,len(images)-1)]
+	print "Recovering cached image: "+imageName
+	return Image.open(imageName)
 	
-	img = Image.new('RGBA', size=(width, height), color=(0, 0, 0, 255))
+def makeRandomImage(width,height):
+
+	img = None
+	# Recover an image from the cache
+	if random() < 0.5:
+		try:
+			img = cacheImageRecover()
+		except:
+			print sys.exc_info()
+
+	# Otherwise make a new one
+	if img == None:
+		img = Image.new('RGBA', size=(width, height), color=(0, 0, 0, 255))
+
 	try:
 		drawImageRandom(img)
 		# img.save(filename+"_blendtest.png")
@@ -32,10 +55,15 @@ def makeRandomImage(width,height):
 		if random() > 0.95:
 			colour = (0,0,0,0)
 			imageCarveCircle(img,colour)
-		filename =  pathImages+"image_"+str(randint(1000000000,9999999999))
-		img.save(filename+"_normalized.png") # cache it
+		# Post-processing
+		if random() > 0.95:
+			img = imageAvgDiff(img) # Edge detection
+			imageNormalize(img)
+		cacheImage(img)
 	except:
 		print sys.exc_info()
+
+
 	return img
 
 def drawImageRandom(canvas):

@@ -17,21 +17,6 @@ def draw(img):
 	formulaR,formulaG,formulaB = getFormulas()
 	makeTrigImage(img,formulaR,formulaG,formulaB)
 
-def getFormulas():
-	formulaR = makeRandomFormula()
-	formulaG = makeRandomFormula()
-	formulaB = makeRandomFormula()
-	return (formulaR,formulaG,formulaB)
-
-def makeRandomFormula():
-	result = ""
-	funcs = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRS"
-	iters = randint(1,11)
-	for i in xrange(0,iters):
-		result=result+(funcs[randint(0,len(funcs)-1)])
-	return result
-
-	
 def makeTrigImage(img,formulaR,formulaG,formulaB): # A kind of psychedelic picture based on application of formula across each location on a place.
 	width = img.size[0]
 	height = img.size[1]
