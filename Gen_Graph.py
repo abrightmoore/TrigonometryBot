@@ -38,46 +38,51 @@ def makeTrigFuncGraphImage(img,formulaR,formulaG,formulaB): # A 2D height graph
 	prevG = None
 	prevB = None
 	
-	for x in xrange(0,width):
-		px = QUANTUMX * float(x-cw)
-		r = calcFormula(formulaR,px,0)*127+127
-		g = calcFormula(formulaG,px,0)*127+127
-		b = calcFormula(formulaB,px,0)*127+127
-		if r > 255:
-			r = 255
-		elif r < 0:
-			r = 0
-		if g > 255:
-			g = 255
-		elif g < 0:
-			g = 0                                           
-		if b > 255:
-			b = 255
-		elif b < 0:
-			b = 0                                           
-		pyr = height-QUANTUMY * r-1      
-		if pyr >= 0 and pyr < height:
-			pixels[int(x),int(pyr)] = (int(r),0,0,int(a))
-		pyg = height-QUANTUMY * g-1     
-		if pyg >= 0 and pyg < height:
-			pixels[int(x),int(pyg)] = (0,int(g),0,int(a))
-		pyb = height - QUANTUMY * b-1      
-		if pyb >= 0 and pyb < height:
-			pixels[int(x),int(pyb)] = (0,0,int(b),int(a))
-		if prevR != None: draw.line(prevR+(x,int(pyr)), (int(r),0,0,int(a)))
-		if prevG != None: draw.line(prevG+(x,int(pyg)), (0,int(g),0,int(a)))
-		if prevB != None: draw.line(prevB+(x,int(pyb)), (0,0,int(b),int(a)))
+	samples = randint(10,30)
+	deltay = int(height/samples)
+	y = 0
+	while y < height:
+		for x in xrange(0,width):
+			px = QUANTUMX * float(x-cw)
+			r = calcFormula(formulaR,px,y)*127+127
+			g = calcFormula(formulaG,px,y)*127+127
+			b = calcFormula(formulaB,px,y)*127+127
+			if r > 255:
+				r = 255
+			elif r < 0:
+				r = 0
+			if g > 255:
+				g = 255
+			elif g < 0:
+				g = 0                                           
+			if b > 255:
+				b = 255
+			elif b < 0:
+				b = 0                                           
+			pyr = height-QUANTUMY * r-1      
+			if pyr >= 0 and pyr < height:
+				pixels[int(x),int(pyr)] = (int(r),0,0,int(a))
+			pyg = height-QUANTUMY * g-1     
+			if pyg >= 0 and pyg < height:
+				pixels[int(x),int(pyg)] = (0,int(g),0,int(a))
+			pyb = height - QUANTUMY * b-1      
+			if pyb >= 0 and pyb < height:
+				pixels[int(x),int(pyb)] = (0,0,int(b),int(a))
+			if prevR != None: draw.line(prevR+(x,int(pyr)), (int(r),0,0,int(a)))
+			if prevG != None: draw.line(prevG+(x,int(pyg)), (0,int(g),0,int(a)))
+			if prevB != None: draw.line(prevB+(x,int(pyb)), (0,0,int(b),int(a)))
 
-		prevR = (x,int(pyr))
-		prevG = (x,int(pyg))
-		prevB = (x,int(pyb))
+			prevR = (x,int(pyr))
+			prevG = (x,int(pyg))
+			prevB = (x,int(pyb))
+		y = y + deltay #height/20.0*cos(float(y/height))
 	del draw
 	del pixels
 
 def drawGraph(img,col):
 	width = img.size[0]
 	height = img.size[1]
-	img.paste( (0,0,0), [0,0,width,height])
+	# img.paste( (0,0,0), [0,0,width,height])
 
 	a = 255
 	cw = width >> 1
