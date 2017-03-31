@@ -105,7 +105,7 @@ def createAttractor(img): # https://gist.github.com/mrbichel/1871929
 			# Does the series tend to infinity
 			if xmin < -1e10 or ymin < -1e10 or xmax > 1e10 or ymax > 1e10:
 				drawit = False
-				print "infinite attractor"
+				# print "infinite attractor"
 				break
 
 			# Does the series tend to a point
