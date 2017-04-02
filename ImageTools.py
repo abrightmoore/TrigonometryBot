@@ -103,7 +103,24 @@ def mergeImages(img1,img2,strategy):
 					g = 255
 				if b > 255:
 					b = 255
-				pix[x,y] = (int(r),int(g),int(b),int(a))                                        
+				pix[x,y] = (int(r),int(g),int(b),int(a))
+	if strategy == "Threshold":
+		for x in xrange(0,width):
+			for y in xrange(0,height):
+				(r1,g1,b1,a1) = pix1[x,y]
+				(r2,g2,b2,a2) = pix2[x,y]
+				threshold = int((r1+g1+b1)/3)
+				ratio = float(threshold/255.0)
+				ratioInv = 1.0-ratio
+				(r,g,b,a) = (ratio*r1+ratioInv*r2,ratio*g1+ratioInv*g2,ratio*b1+ratioInv*b2,255)
+				if r > 255:
+					r = 255
+				if g > 255:
+					g = 255
+				if b > 255:
+					b = 255
+				pix[x,y] = (int(r),int(g),int(b),int(a))
+		
 	return img                                        
 
 def checkAverageAlpha(img):
@@ -226,7 +243,7 @@ def imageNormalize(img):
 				max = mx
 
 	# Second... scale values to 0-255
-	if min > 0 and max < 255 and min < max:
+	if (min > 0 or max < 255) and min < max:
 		scaler = float(255)/float(max-min)
 		shift = -min
 		print min,max,scaler,shift
