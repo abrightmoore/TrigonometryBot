@@ -3,6 +3,8 @@ A Twitter Bot that generates images using mathematic functions
 
 Check its work on Twitter as https://twitter.com/TrigonometryBot/with_replies
 
+Tweet text is modified from "College Geometry" by Carl Stitz, Ph.D. Jeff Zeager, Ph.D. available here: https://archive.org/stream/flooved3486/flooved3486_djvu.txt
+
 ![Sample output](https://pbs.twimg.com/media/C5ZgkRQUwAEjWrr.jpg)
 
 # Dependencies
