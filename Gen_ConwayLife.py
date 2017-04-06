@@ -16,12 +16,14 @@ from Gen_Trigonometry import calcFormula
 from Colours import *
 
 def draw(img):
-	imgs=alife(img,80)
+	SAVEANIMATION = False # Make this True to create an animated file. Warning: large.
+	imgs=alife(img,randint(20,80))
 	filename = "imagesTest/ablife_"+str(randint(1000000,9999999))+".gif"
 	imgsNumpy = []
 	for image in imgs:
 		imgsNumpy.append(array(image.getdata()).reshape(image.size[0], image.size[1], 4))
-	imageio.mimsave(filename, imgsNumpy)
+	if SAVEANIMATION == True:
+		imageio.mimsave(filename, imgsNumpy)
 	imageBlend(img,imgs[len(imgs)-1])
 
 def randomise(field,chance):
