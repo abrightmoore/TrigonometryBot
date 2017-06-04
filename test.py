@@ -62,36 +62,30 @@ def makeRandomImage(width,height):
 
 	return img
 
-def drawImageRandom(canvas):
+def drawImage(canvas,method):
 	''' Choose a generator at random from the file system, invoke it, and get an image back in return
 	'''
 
-	extension = "Gen_*.py"
-	
-	# get a list of the available generators (from the file system)
-	imageGenerators = glob.glob(extension)
-	print 'Found %s image generators:' % (len(imageGenerators))
-	for fileName in imageGenerators:
-		print fileName
-	# call one of them
-#	theModule = imageGenerators[randint(0,len(imageGenerators)-1)]
-#	print "Selected image generator: "+theModule
-	
-	module = __import__("Gen_ConwayLife")   # theModule[:-3])
-	#module = __import__(path+theModule[:-3]) # Courtesy @CodeWarrior0 via https://github.com/mcedit/mcedit/blob/master/editortools/filter.py
-	# Return the resulting image
+	module = __import__(method)   # theModule[:-3])
 	return module.draw(canvas)
 
 count = 1
-pathImages = "imagesTest/"
+
 while(count > 0):
 #	count = count-1
-	dimension = 400  #randint(1,8)*100
+	dimension = 10000  #randint(1,8)*100
 	val = randint(32,128)
-	# img = Image.new('RGBA', size=(dimension, dimension), color=(val, int(val*3/4), int(val*2/3), 255))
-	img = ImageFactory.makeRandomImage(dimension,dimension)
-	drawImageRandom(img)
-	filename =  pathImages+"Graph"+str(randint(1000000000,9999999999))
+#	img = Image.new('RGBA', size=(dimension, dimension), color=(val, int(val*3/4), int(val*2/3), 255))
+	img = Image.new('RGBA', size=(dimension, dimension), color=(0,0,0, 255))
+#	img = ImageFactory.makeRandomImage(dimension,dimension)
+
+	method = "Gen_Maze"
+	drawImage(img,method)
+	drawImage(img,method)
+	drawImage(img,method)	
+	
+	filename =  method+str(randint(1000000000,9999999999))
+
 	# img.save(filename+"_blendtest.png")
 	imageNormalize(img)
 #	colour = (0,0,0,0)
