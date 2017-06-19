@@ -186,8 +186,8 @@ def postToTwitter_File(api,newFile,tweet_text,idReply,img):
 			print "Error, backing off..."
 			errors = errors+1
 			print e
+			del api
 			time.sleep(CONFAIL_BACKOFFTIME)
-                        del api
 			api = makeNewConnection() 
 		retries = retries-1
 	if errors == CONFAIL_RETRIES: # Failed to post
