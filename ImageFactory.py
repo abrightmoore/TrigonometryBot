@@ -75,8 +75,9 @@ def drawImageRandom(canvas):
 	# get a list of the available generators (from the file system)
 	imageGenerators = glob.glob(extension)
 	print 'Found %s image generators:' % (len(imageGenerators))
-	for fileName in imageGenerators:
-		print fileName
+	if random() > 0.9:
+		for fileName in imageGenerators:
+			print fileName
 	# call one of them
 	theModule = imageGenerators[randint(0,len(imageGenerators)-1)]
 	print "Selected image generator: "+theModule
