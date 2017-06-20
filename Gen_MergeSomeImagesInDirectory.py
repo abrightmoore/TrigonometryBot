@@ -37,30 +37,31 @@ def draw(img):
 	workspace = zeros((width,height,3))
 	extension = dir+"image_*.png"
 	images = glob.glob(extension)
-	numImagesProc = 0
-	while random() > 0.025 or numImagesProc < 3:
-		image = images[randint(0,len(images)-1)]
-		print "Processing "+image
-		imgIn = Image.open(image)
-		sx = imgIn.size[0]
-		sy = imgIn.size[1]
+	if len(images) > 0:
+		numImagesProc = 0
+		while random() > 0.025 or numImagesProc < 3:
+			image = images[randint(0,len(images)-1)]
+			print "Processing "+image
+			imgIn = Image.open(image)
+			sx = imgIn.size[0]
+			sy = imgIn.size[1]
 
-		if sx != width or sy != height:
-			imgIn = imgIn.resize((width,height), Image.ANTIALIAS)
-		
-		addImage(workspace,imgIn)
-		numImagesProc = numImagesProc + 1
+			if sx != width or sy != height:
+				imgIn = imgIn.resize((width,height), Image.ANTIALIAS)
 			
-	pix = img.load()
-	for x in xrange(0,width):
-		for y in xrange(0,height):
-			r = workspace[x][y][0]/numImagesProc
-			g = workspace[x][y][1]/numImagesProc
-			b = workspace[x][y][2]/numImagesProc
-			pix[x,y] = (int(r),int(g),int(b),255)
-			
-	del pix
-	filename =  "image_blended_"+str(randint(10000000000,99999999999))
-	imageNormalize(img)
-	img.save("images/"+filename+".png") # cache it
+			addImage(workspace,imgIn)
+			numImagesProc = numImagesProc + 1
+				
+		pix = img.load()
+		for x in xrange(0,width):
+			for y in xrange(0,height):
+				r = workspace[x][y][0]/numImagesProc
+				g = workspace[x][y][1]/numImagesProc
+				b = workspace[x][y][2]/numImagesProc
+				pix[x,y] = (int(r),int(g),int(b),255)
+				
+		del pix
+		filename =  "image_blended_"+str(randint(10000000000,99999999999))
+		imageNormalize(img)
+		img.save("images/"+filename+".png") # cache it
 
