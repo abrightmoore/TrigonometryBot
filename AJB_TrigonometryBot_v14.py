@@ -95,11 +95,12 @@ def retryFailedPosts(api,tweet_text):
 
 	# get a list of the available images (from the file system)
 	images = glob.glob(extension)
-	imageName = images[randint(0,len(images)-1)]
-	print "Recovering image to retry: "+imageName
-	img = Image.open(imageName)
-	postToTwitter_Image(api,img,tweet_text,"")
-	os.remove(imageName) # Note - Very low potential for filename collisions
+	if len(images) > 0:
+		imageName = images[randint(0,len(images)-1)]
+		print "Recovering image to retry: "+imageName
+		img = Image.open(imageName)
+		postToTwitter_Image(api,img,tweet_text,"")
+		os.remove(imageName) # Note - Very low potential for filename collisions
 
 def beCreative(width,height,postToName):
 	""" Creates an image using available strategies to create elements and combine them
