@@ -61,7 +61,7 @@ def draw(img):
 				pix[x,y] = (int(r),int(g),int(b),255)
 				
 		del pix
-		filename =  "image_blended_"+str(randint(10000000000,99999999999))
-		imageNormalize(img)
-		img.save("images/"+filename+".png") # cache it
+#		filename =  "image_blended_"+str(randint(10000000000,99999999999))
+#		imageNormalize(img)
+#		img.save("images/"+filename+".png") # cache it
 
