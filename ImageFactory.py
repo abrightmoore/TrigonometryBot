@@ -85,7 +85,13 @@ def drawImageRandom(canvas):
 	module = __import__(theModule[:-3])
 	#module = __import__(path+theModule[:-3]) # Courtesy @CodeWarrior0 via https://github.com/mcedit/mcedit/blob/master/editortools/filter.py
 	# Return the resulting image
-	return module.draw(canvas)
+	width = canvas.size[0]
+	height = canvas.size[1]
+	img = Image.new('RGBA', size=(width, height), color=(0,0,0, 255))
+	module.draw(img)
+	imageBlend(canvas,img)
+	imageNormalize(canvas)
+	return canvas
 
 '''
 pathImages = "images/"
