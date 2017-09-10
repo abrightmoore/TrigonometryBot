@@ -24,7 +24,7 @@ GAMENAME = "AJB_TrigonometryBot"
 GAMEVER = 9.0
 FILENAMEIMAGE = '@abrightmoore_@TrigonometryBot_output.png'
 FOLDER_RETRY = "retry/"
-MYNAME = "TrigonometryBot"
+MYNAME = "@TrigonometryBot"
 PREVIMG = None
 MEMORY = [] # A list of interaction tuples
 jobsComplete = 0
@@ -252,7 +252,7 @@ def handleMentions(api,max_id,tweetbot):
 				# Respond with a new picture
 				# Strip out the username
 				msg.replace(replyToName,"")
-				msg.replace("@"+MYNAME,"")
+				msg.replace(MYNAME,"")
 				msg.replace("@","") # 2017-02-05 AB - ensure formula munging doesn't spam random Twitter handles
 				msg.strip()
 				l = len(msg)-1
