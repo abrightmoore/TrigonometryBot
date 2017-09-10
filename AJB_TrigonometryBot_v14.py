@@ -72,8 +72,9 @@ def mainLoop():
 		# Poll Twitter for mentions
 		max_id = handleMentions(api,max_id,tweetbot)
 		
-		if random() > 0.1: # Check for failed image posts and have a go at re-posting them
+		if random() > 0.8: # Check for failed image posts and have a go at re-posting them
 			retryFailedPosts(api,"Here's something I forgot to share earlier:")
+			jobsComplete = jobsComplete +1
 		
 		# Go to sleep - duration depends on jobs completed this cycle
 		restTime = restTimeDefault+RESTTIMEQUANTUM*jobsComplete
