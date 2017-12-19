@@ -302,8 +302,11 @@ def handleMentions(api,max_id,tweetbot):
 							usrimgrgba = usrimgrgba.resize((width,height), Image.ANTIALIAS)
 						methods = ["Circle","Circle","Blend","Circle","Blend","Circle","Blend","Circle","Blend","Spike","Blend","Threshold"]
 						img = None
-						if "kaleidoscope" in msg.lower():
+						msgl = msg.lower()
+						if "kaleidoscope" in msgl:
 							img = ImageFactory.makeSpecificImageType(usrimgrgba,"_Gen_Kaleidoscope.py")
+						elif "solar system" in msgl  or "planet" in msgl or "space" in msgl:
+							img = ImageFactory.makeSpecificImageType(usrimgrgba,"_GEN_SolarSystem_v5.py")
 						else:
 							img = beCreative(width,height,replyToName) # Choose what type of image to create
 							img = mergeImages(usrimgrgba,img, methods[randint(0,len(methods)-1)] )
