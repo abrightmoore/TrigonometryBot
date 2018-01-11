@@ -6,5 +6,5 @@ mkdir resultimages
 mkdir kaleidoscopefragments
 
 :top
-python AJB_TrigonometryBot_v16.py
+python AJB_TrigonometryBot_v17.py
 goto top
