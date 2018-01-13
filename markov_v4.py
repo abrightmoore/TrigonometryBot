@@ -41,17 +41,37 @@ class Word:
                 result = None
 
 		if total > 0:
-                        choice = randint(0,total-1)+1
-                        value = 0
-                        for key in self.nextWords.keys():
-                                v = self.nextWords.get(key)
-                                value += v
-                                if value >= choice:
-                                        result = key
-                                        break
+			choice = randint(0,total-1)+1
+			value = 0
+			for key in self.nextWords.keys():
+					v = self.nextWords.get(key)
+					value += v
+					if value >= choice and v > 1:
+						result = key
+						break
 #		print "Result is ",result
+		if result == None:
+			if random() > 0.7:
+				result = self.getNext2()
 		return result
 
+	def getNext2(self):
+		total = sum(self.nextWords.values())
+                result = None
+
+		if total > 0:
+			choice = randint(0,total-1)+1
+			value = 0
+			for key in self.nextWords.keys():
+					v = self.nextWords.get(key)
+					value += v
+					if value >= choice:
+						result = key
+						break
+#		print "Result is ",result
+		return result
+		
+		
 	def getNext1(self):
 		if random() > 0.2:
 			return self.getNext1()
