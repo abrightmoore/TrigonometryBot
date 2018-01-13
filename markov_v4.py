@@ -52,6 +52,22 @@ class Word:
 #		print "Result is ",result
 		return result
 
+	def getNext1(self):
+		if random() > 0.2:
+			return self.getNext1()
+		result = None
+		max = 0
+		for key in self.nextWords.keys():
+				v = self.nextWords.get(key)
+				if v > max:
+					max = v
+					result = key
+					break
+					
+#		print "Result is ",result
+		return result
+		
+		
 def validWord(word):
 	return (word.isalpha() or word == '.' or word == ',' or (len(string.split(word,".")) > 0 and word.isalpha()))
 
@@ -141,9 +157,9 @@ def makeSentence(words,count):
 	
 	theWordsUsed = []
 	result = theWord.label.title()
-	#print "START: "+result
+	print "START: "+result
 	keepGoing = True
-	count = 30
+	count = 15
 	while keepGoing:
 		theWordsUsed.append(theWord)
 		nextWord = theWord.getNext()
@@ -159,14 +175,15 @@ def makeSentence(words,count):
                         #print nextWord
         #		if nextWord.lower() in CONJUNCTIONS:
         #			keepGoing = True
-                        if theWord.end == True and count < 0 and theWord.label.lower() not in CONJUNCTIONS and (nextWord in string.punctuation or count < 1):
+                        if (theWord.end == True and count < 0 and theWord.label.lower() not in CONJUNCTIONS) or (nextWord in ".?!" and count < 0):
                                 keepGoing = False
-                        if count < -100:
+                        if count < -10:
                                 keepGoing = False
                         if keepGoing == False and nextWord not in string.punctuation:
                                 result = result + '.'
                 else:
                         keepGoing = False
+	print "END: ",result
 	if False:
 		print "Words used:"
 		for word in theWordsUsed:
