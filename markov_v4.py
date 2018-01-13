@@ -53,7 +53,7 @@ class Word:
 		return result
 
 def validWord(word):
-	return (word.isalpha() or word == '.' or word == ',' or len(string.split(word,".")) > 0)
+	return (word.isalpha() or word == '.' or word == ',' or (len(string.split(word,".")) > 0 and word.isalpha()))
 
 def getWordChain():
         SENTENCEEND = ".?!…"
@@ -127,7 +127,7 @@ def removeWordLinks(words,word,wordToRemove):
 	
 	
 def makeSentence(words,count):
-	CONJUNCTIONS = ["is","but","for","or","nor","so","yet","its","the","a","an","her","his","their","our","of","these","in","what","to","and","are","do","this","my","your","we","hear","be","which","resultant","each","when","where","why","who","how","had","that","with"]
+	CONJUNCTIONS = ["is","but","for","or","nor","so","yet","its","the","a","an","her","his","their","our","of","these","in","what","to","and","are","do","this","my","your","we","hear","be","which","resultant","each","when","where","why","who","how","had","that","with","actual"]
 
 	keepTrying = True
 	counter = 1000
@@ -143,7 +143,7 @@ def makeSentence(words,count):
 	result = theWord.label.title()
 	#print "START: "+result
 	keepGoing = True
-	count = 15
+	count = 30
 	while keepGoing:
 		theWordsUsed.append(theWord)
 		nextWord = theWord.getNext()
@@ -159,7 +159,7 @@ def makeSentence(words,count):
                         #print nextWord
         #		if nextWord.lower() in CONJUNCTIONS:
         #			keepGoing = True
-                        if theWord.end == True and theWord.label.lower() not in CONJUNCTIONS and (nextWord in string.punctuation or count < 1):
+                        if theWord.end == True and count < 0 and theWord.label.lower() not in CONJUNCTIONS and (nextWord in string.punctuation or count < 1):
                                 keepGoing = False
                         if count < -100:
                                 keepGoing = False
