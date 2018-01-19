@@ -13,12 +13,12 @@ import urllib2 as urllib
 
 from PIL import Image, ImageDraw
 from TwitterAPI import TwitterAPI # by @boxnumber03 https://dev.twitter.com/resources/twitter-libraries. Wrapper to communicate via Twitter
-from markovbot import MarkovBot # by @esdalmaijer. Use for conversation
+# from markovbot import MarkovBot # by @esdalmaijer. Use for conversation
 
 # from Trigpic import *
 import ImageFactory
 from ImageTools import *
-from markov_v3 import getWordChain, makeSentence
+from markov_v4 import getWordChain, makeSentence
 
 TWITTERLIMIT = 140 # Characters
 GAMENAME = "AJB_TrigonometryBot"
@@ -77,7 +77,7 @@ def mainLoop():
 		max_id = handleMentions(api,max_id,words)
 		
 		if random() > 0.1: # Check for failed image posts and have a go at re-posting them
-			retryFailedPosts(api,"Here's something I forgot to share earlier:")
+			retryFailedPosts(api,"Here's something I forgot to share earlier:",words)
 		
 		# Go to sleep - duration depends on jobs completed this cycle
 		restTime = restTimeDefault+RESTTIMEQUANTUM*jobsComplete
@@ -94,8 +94,13 @@ def mainLoop():
 		# jobsComplete = 0
 		del api
 
-def retryFailedPosts(api,tweet_text):
+def retryFailedPosts(api,prefix,words):
 	extension = FOLDER_RETRY+"*.png"
+	
+	tweet_text = getTweetTextSentence(words,prefix)
+	while len(tweet_text) > TWITTERLIMIT: # Twitter limit
+		#tweet_text = getTweetText(tweetbot,tweetPrefixDefault,SEEDWORD)
+		tweet_text = getTweetTextSentence(words,prefix)
 
 	# get a list of the available images (from the file system)
 	images = glob.glob(extension)
@@ -202,7 +207,10 @@ def postToTwitter_File(api,newFile,tweet_text,idReply,img):
 		img.save(filename)
 		
 def getTweetTextSentence(words,prefix):
-	TWEET_TEXT = makeSentence(words, 20) + "\n\n" + prefix
+	sentence = makeSentence(words,20) #.decode('utf-8')
+	linefeed = "\n\n"
+	pref = prefix.decode('utf-8')
+	TWEET_TEXT = sentence + linefeed + pref
 	return TWEET_TEXT
 	
 def getTweetText(tweetbot,prefix,seedword):
