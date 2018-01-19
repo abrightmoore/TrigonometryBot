@@ -1,14 +1,27 @@
 # TrigonometryBot
-A Twitter Bot that generates images using mathematic functions
+A Twitter Bot that generates artistic images using mathematic functions
 
 Check its work on Twitter as https://twitter.com/TrigonometryBot/with_replies
+
+TrigonometryBot is implemented in an extensible and modular fashion allowing new picture drawing functions to be added by creating a single new Python file that implements the 'draw(image)' method, where image is a PIL image.
 
 Tweet text is modified from "College Geometry" by Carl Stitz, Ph.D. Jeff Zeager, Ph.D. available here: https://archive.org/stream/flooved3486/flooved3486_djvu.txt
 
 ![Sample output](https://pbs.twimg.com/media/C5ZgkRQUwAEjWrr.jpg)
+![Sample output](https://pbs.twimg.com/media/DT5NUXbVAAEyZ9r.jpg)
+
+# How to build
+1. Copy the files into a new directory
+2. Install Python 2.7
+3. pip install pygame
+4. pip install pillow
+5. pip install TwitterAPI
+6. pip install imageio
+7. On windows, run the included .bat file which will create required subdirectories and start the bot.
+8. Over time, the image folders may become large. Monitor their size and rename them or archive them to re-initialise.
 
 # Dependencies
-1. markovbot from @esdalmaijer. Use for witty conversation. Get it via: https://github.com/esdalmaijer/markovbot
+1. [Jan 2018: No longer required] markovbot from @esdalmaijer. Use for witty conversation. Get it via: https://github.com/esdalmaijer/markovbot
 2. TwitterAPI by @boxnumber03. Wrapper to communicate via Twitter. Get it via: https://dev.twitter.com/resources/twitter-libraries
 3. PIL - use pip install Pillow or similar.
 4. There are some test harnesses in this project which use PyGame
