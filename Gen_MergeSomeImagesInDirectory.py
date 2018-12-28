@@ -39,7 +39,7 @@ def draw(img):
 	images = glob.glob(extension)
 	if len(images) > 0:
 		numImagesProc = 0
-		while random() > 0.025 or numImagesProc < 3:
+		while random() > 0.1 or numImagesProc < 3:
 			image = images[randint(0,len(images)-1)]
 			print "Processing "+image
 			imgIn = Image.open(image)
