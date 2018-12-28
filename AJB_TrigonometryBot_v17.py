@@ -37,7 +37,7 @@ def mainLoop():
 
 	# tweetbot = initMarkovBot() # Required for supporting conversations
 	words = getWordChain()
-	tweetPrefixDefault = "I made this. "
+	tweetPrefixDefault = "I made this"
 	max_ids = loadStringsFromFile(GAMENAME,"MAXID.txt")
 	max_id = int(max_ids[len(max_ids)-1])
 	
@@ -67,6 +67,15 @@ def mainLoop():
 			# To Do: Adjust image based on 'mood' or how 'tired' I am
 			#tweet_text = getTweetText(tweetbot,tweetPrefixDefault,SEEDWORD)
 			tweet_text = getTweetTextSentence(words,tweetPrefixDefault)
+			if randint(1,10) > 8:
+				tweet_text = tweet_text+"\n#CreativeCoding"
+			if randint(1,10) > 8:
+				tweet_text = tweet_text+"\n#ProceduralArt"
+			if randint(1,10) > 8:
+				tweet_text = tweet_text+"\n#ComputerArt"
+			if randint(1,10) > 8:
+				tweet_text = tweet_text+"\n#Generative"
+				
 			while len(tweet_text) > TWITTERLIMIT: # Twitter limit
 				#tweet_text = getTweetText(tweetbot,tweetPrefixDefault,SEEDWORD)
 				tweet_text = getTweetTextSentence(words,tweetPrefixDefault)
