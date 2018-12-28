@@ -92,7 +92,7 @@ def validWord(word):
 	return (word.isalpha() or word == '.' or word == ',' or (len(string.split(word,".")) > 0 and word.isalpha()))
 
 def getWordChain():
-        SENTENCEEND = ".?!…"
+	SENTENCEEND = ".?!…"
 	fileNames = None
 	with open('LanguageExampleFiles.txt','r') as myfiles:
 		data = myfiles.read()
@@ -113,11 +113,11 @@ def getWordChain():
 		if DEBUG: print data
 
 		for word in data:
-                        if DEBUG: print "Processing ",word
+			if DEBUG: print "Processing ",word
 			word = word.lower()
 			if validWord(word):
 				if lastWord in words:
-                                        if DEBUG: print lastWord," is in words"
+					if DEBUG: print lastWord," is in words"
 					prevWord = words.get(lastWord)
 					prevWord.add(word)
 					if word in SENTENCEEND:
@@ -129,8 +129,8 @@ def getWordChain():
 					theWord.count += 1
 				else:
 					newWord = Word(word)
-                                        if lastWord is not None and lastWord in SENTENCEEND:
-        					newWord.start = True
+					if lastWord is not None and lastWord in SENTENCEEND:
+						newWord.start = True
 					words[word] = newWord
 					if DEBUG: print "Added ",newWord
 				lastWord = word
@@ -146,10 +146,10 @@ def getWordChain():
 	removeWordLinks(words,"a","but")
 	removeWordLinks(words,"a","a")
 	removeWordLinks(words,"a","the")
-        removeWordLinks(words,"an","but")
+	removeWordLinks(words,"an","but")
 	removeWordLinks(words,"to","the")
 	removeWordLinks(words,"they","the")
-        removeWordLinks(words,"my","and")
+	removeWordLinks(words,"my","and")
 
 	
 			
@@ -158,7 +158,7 @@ def getWordChain():
 def removeWordLinks(words,word,wordToRemove):
 	theWord = words.get(word)
 	if theWord is not None:
-        	theWord.remove(wordToRemove)
+		theWord.remove(wordToRemove)
 	# pass
 	
 	
@@ -172,7 +172,7 @@ def makeSentence(words,count):
 		counter -= 1
 		theWord = words.get(choice(words.keys()))
 		if theWord.start == True:
-                        # print "Starting at ",theWord
+			# print "Starting at ",theWord
 			keepTrying = False
 	
 	theWordsUsed = []
@@ -184,25 +184,27 @@ def makeSentence(words,count):
 		theWordsUsed.append(theWord)
 		nextWord = theWord.getNext()
 		if nextWord is not None:
-                        if nextWord == "i":
-                                result = result+" I"
-                        elif nextWord in string.punctuation:
-                                result = result+nextWord
-                        else:
-                                result = result+" "+nextWord
-                        theWord = words.get(nextWord)
-                        count -= 1
-                        #print nextWord
-        #		if nextWord.lower() in CONJUNCTIONS:
-        #			keepGoing = True
-                        if (theWord.end == True and count < 0 and theWord.label.lower() not in CONJUNCTIONS) or (nextWord in ".?!" and count < 0):
-                                keepGoing = False
-                        if count < -10:
-                                keepGoing = False
-                        if keepGoing == False and nextWord not in string.punctuation:
-                                result = result + '.'
-                else:
-                        keepGoing = False
+						if nextWord == "i":
+							result = result+" I"
+						if theWord.label in ".?!":
+								nextWord = nextWord.title()
+						elif nextWord in string.punctuation:
+								result = result+nextWord
+						else:
+								result = result+" "+nextWord
+						theWord = words.get(nextWord)
+						count -= 1
+						#print nextWord
+		#		if nextWord.lower() in CONJUNCTIONS:
+		#			keepGoing = True
+						if theWord == None or (theWord.end == True and count < 0 and theWord.label.lower() not in CONJUNCTIONS) or (nextWord in ".?!" and count < 0):
+								keepGoing = False
+						if count < -10:
+								keepGoing = False
+						if keepGoing == False and nextWord not in string.punctuation:
+								result = result + '.'
+		else:
+				keepGoing = False
 	print "END: ",result
 	if False:
 		print "Words used:"
